@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 
 const app = express();
+app.set("trust proxy", 1);
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = "0.0.0.0";
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, "sci_j.db");
