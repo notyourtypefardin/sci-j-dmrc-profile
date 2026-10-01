@@ -1,14 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 760" role="img" aria-label="DMRC logo">
-  <defs>
-    <linearGradient id="r" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ef2027"/><stop offset="1" stop-color="#b70f16"/></linearGradient>
-  </defs>
-  <path d="M350 18 L646 92 V340 C646 535 527 657 350 738 C173 657 54 535 54 340 V92 Z" fill="url(#r)" stroke="#111" stroke-width="18"/>
-  <path d="M105 151 Q350 88 595 151" fill="none" stroke="#111" stroke-width="20"/>
-  <text x="350" y="220" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="132" font-weight="900" fill="#111" letter-spacing="-6">DMRC</text>
-  <circle cx="350" cy="356" r="58" fill="#f7c900" stroke="#111" stroke-width="12"/>
-  <path d="M260 425 Q350 340 440 425" fill="#fff" stroke="#111" stroke-width="12"/>
-  <path d="M350 425 V585" stroke="#111" stroke-width="10"/>
-  <path d="M110 472 Q220 410 350 468 Q480 410 590 472" fill="none" stroke="#111" stroke-width="14"/>
-  <path d="M112 473 Q220 530 350 478 Q480 530 588 473" fill="none" stroke="#111" stroke-width="14"/>
-  <text x="350" y="635" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="54" font-weight="900" fill="#111">ESTD 2010</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 680" role="img" aria-label="DMRC logo">
+<defs>
+ <linearGradient id="red" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ff2028"/><stop offset="1" stop-color="#d3131b"/></linearGradient>
+ <linearGradient id="sun" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd51a"/><stop offset="1" stop-color="#ff8d00"/></linearGradient>
+</defs>
+<path d="M300 18C455 18 546 58 566 72L552 420C546 530 468 615 300 662C132 615 54 530 48 420L34 72C54 58 145 18 300 18Z" fill="#211f20" stroke="#ef2028" stroke-width="16"/>
+<path d="M55 74Q300 5 545 74" fill="none" stroke="#ef2028" stroke-width="13"/>
+<text x="300" y="178" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="105" font-weight="900" fill="#fff" letter-spacing="-5">DMRC</text>
+<g transform="translate(0 8)">
+ <g fill="url(#sun)" stroke="#f4c400" stroke-width="2">
+  <path d="M300 220l-8 91h16z"/><path d="M246 230l30 86 13-7z"/><path d="M354 230l-43 79 13 7z"/>
+  <path d="M200 263l73 52 8-13z"/><path d="M400 263l-81 39 8 13z"/><path d="M170 315l102 12 1-14z"/><path d="M430 315l-103-2-1 14z"/>
+ </g>
+ <circle cx="300" cy="326" r="68" fill="#ef2a31"/>
+ <path d="M188 345Q245 292 300 350Q355 292 412 345L412 415Q355 374 300 420Q245 374 188 415Z" fill="#fff" stroke="#111" stroke-width="9"/>
+ <path d="M300 350V420" stroke="#111" stroke-width="7"/>
+ <path d="M188 415Q245 450 300 420Q355 450 412 415" fill="none" stroke="#111" stroke-width="7"/>
+</g>
+<text x="300" y="572" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="48" font-weight="900" fill="#ffd21a">ESTD 2010</text>
 </svg>
