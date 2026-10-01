@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 760" role="img" aria-label="DMRC logo">
+  <defs>
+    <linearGradient id="r" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ef2027"/><stop offset="1" stop-color="#b70f16"/></linearGradient>
+  </defs>
+  <path d="M350 18 L646 92 V340 C646 535 527 657 350 738 C173 657 54 535 54 340 V92 Z" fill="url(#r)" stroke="#111" stroke-width="18"/>
+  <path d="M105 151 Q350 88 595 151" fill="none" stroke="#111" stroke-width="20"/>
+  <text x="350" y="220" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="132" font-weight="900" fill="#111" letter-spacing="-6">DMRC</text>
+  <circle cx="350" cy="356" r="58" fill="#f7c900" stroke="#111" stroke-width="12"/>
+  <path d="M260 425 Q350 340 440 425" fill="#fff" stroke="#111" stroke-width="12"/>
+  <path d="M350 425 V585" stroke="#111" stroke-width="10"/>
+  <path d="M110 472 Q220 410 350 468 Q480 410 590 472" fill="none" stroke="#111" stroke-width="14"/>
+  <path d="M112 473 Q220 530 350 478 Q480 530 588 473" fill="none" stroke="#111" stroke-width="14"/>
+  <text x="350" y="635" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="54" font-weight="900" fill="#111">ESTD 2010</text>
+</svg>
