@@ -17,7 +17,7 @@ header{height:76px;background:linear-gradient(90deg,#0b0b0d,#19191b);border-bott
 .card{background:#fff;border:1px solid #29292d;border-top:4px solid var(--red);border-radius:12px;box-shadow:0 12px 35px #0008;padding:26px;margin-bottom:22px}
 .auth-card{max-width:600px;margin:55px auto}
 .logo-center{text-align:center;margin-bottom:12px}
-.logo-center img{width:190px;max-height:190px;object-fit:contain}
+.logo-center img{width:190px;height:auto;max-height:none;object-fit:contain}
 h1,h2{margin:0 0 10px;color:#111}
 h1{font-size:28px}.muted{color:#666;line-height:1.5}
 .tabs{display:flex;gap:8px;margin:20px 0}
@@ -32,8 +32,8 @@ label{font-weight:800;font-size:14px}
 .badge{display:inline-block;background:#171719;color:#fff;border-left:4px solid var(--red);padding:7px 11px;border-radius:4px;font-size:13px;font-weight:800}
 #app{display:none}
 .profile{overflow:hidden;border-radius:10px;background:#171719;color:#fff;border:1px solid #333}
-.cover{height:145px;background:radial-gradient(circle at 75% 20%,#4b4b4f,#18181a 55%,#0c0c0d);border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:center}
-.cover img{height:125px;width:auto;object-fit:contain}
+.cover{height:160px;background:radial-gradient(circle at 75% 20%,#4b4b4f,#18181a 55%,#0c0c0d);border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:center}
+.cover img{height:125px;width:auto;max-width:90%;object-fit:contain}
 .profile-body{padding:0 28px 28px;position:relative}
 .avatar{margin-top:-54px;width:108px;height:108px;border-radius:50%;border:5px solid #171719;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900}
 .profile-name{font-size:29px;font-weight:900;margin-top:10px}
@@ -46,14 +46,14 @@ label{font-weight:800;font-size:14px}
 header{padding:7px 13px}.brand img{height:50px}.brand span{font-size:16px}
 .grid,.profile-grid{grid-template-columns:1fr}.full{grid-column:auto}
 .auth-card{margin:25px auto}.card{padding:20px}
-.profile-body{padding:0 17px 20px}.cover{height:125px}.cover img{height:108px}
+.profile-body{padding:0 17px 20px}.cover{height:135px}.cover img{height:112px;max-width:90%}
 }
 </style>
 </head>
 <body>
 <header>
   <div class="brand">
-    <img src="dmrc-logo.svg" alt="DMRC Logo">
+    <img src="dmrc-logo-exact-original.jpg" alt="DMRC Logo">
     <div><span>SCI J</span><small>DMRC PROFILE SYSTEM</small></div>
   </div>
   <div id="headUser"></div>
@@ -61,7 +61,7 @@ header{padding:7px 13px}.brand img{height:50px}.brand span{font-size:16px}
 
 <div class="wrap">
 <section id="auth" class="card auth-card">
-  <div class="logo-center"><img src="dmrc-logo.svg" alt="DMRC Logo"></div>
+  <div class="logo-center"><img src="dmrc-logo-exact-original.jpg" alt="DMRC Logo"></div>
   <h1>SCI J Account</h1>
   <p class="muted">Create your unique account or login to access your DMRC Profile.</p>
 
@@ -87,7 +87,7 @@ header{padding:7px 13px}.brand img{height:50px}.brand span{font-size:16px}
 
 <section id="app">
   <div class="card" id="onboarding">
-    <div class="logo-center"><img src="dmrc-logo.svg" alt="DMRC Logo" style="width:105px"></div>
+    <div class="logo-center"><img src="dmrc-logo-exact-original.jpg" alt="DMRC Logo" style="width:105px"></div>
     <h2>Complete Your DMRC Profile</h2>
     <p class="muted">Login করার পর Roll Number, Class এবং আগের application details save করে তোমার profile তৈরি করো।</p>
     <form id="profileForm" class="grid">
@@ -109,7 +109,7 @@ header{padding:7px 13px}.brand img{height:50px}.brand span{font-size:16px}
 
   <div class="card" id="profileCard" style="display:none">
     <div class="profile">
-      <div class="cover"><img src="dmrc-logo.svg" alt="DMRC Logo"></div>
+      <div class="cover"><img src="dmrc-logo-exact-original.jpg" alt="DMRC Logo"></div>
       <div class="profile-body">
         <div class="avatar" id="avatar">S</div>
         <div class="profile-name" id="profileName">Student</div>
