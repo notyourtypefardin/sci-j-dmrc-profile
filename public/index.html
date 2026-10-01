@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DMRC • SCI J</title>
+<style>
+*{box-sizing:border-box}
+:root{--red:#ed1c24;--dark:#171719;--black:#0d0d0f;--soft:#f5f5f5}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--black);color:#181818;min-height:100vh}
+header{height:76px;background:linear-gradient(90deg,#0b0b0d,#19191b);border-bottom:3px solid var(--red);color:white;display:flex;align-items:center;justify-content:space-between;padding:7px 28px;position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.5px}
+.brand img{height:58px;width:auto;object-fit:contain}
+.brand span{font-size:21px}.brand small{display:block;color:#bbb;font-size:10px;letter-spacing:2px;margin-top:2px}
+#headUser{font-size:13px;color:#ddd}
+.wrap{max-width:960px;margin:32px auto;padding:0 15px}
+.card{background:#fff;border:1px solid #29292d;border-top:4px solid var(--red);border-radius:12px;box-shadow:0 12px 35px #0008;padding:26px;margin-bottom:22px}
+.auth-card{max-width:600px;margin:55px auto}
+.logo-center{text-align:center;margin-bottom:12px}
+.logo-center img{width:190px;max-height:190px;object-fit:contain}
+h1,h2{margin:0 0 10px;color:#111}
+h1{font-size:28px}.muted{color:#666;line-height:1.5}
+.tabs{display:flex;gap:8px;margin:20px 0}
+button{border:0;background:var(--red);color:white;padding:11px 18px;border-radius:6px;font-weight:800;cursor:pointer;transition:.2s}
+button:hover{background:#bd1118}
+button.alt{background:#222}
+input,select{width:100%;padding:11px 12px;border:1px solid #aaa;border-radius:6px;margin-top:6px;background:#fff;font-size:14px}
+input:focus,select:focus{outline:2px solid #ed1c2440;border-color:var(--red)}
+label{font-weight:800;font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.full{grid-column:1/-1}
+.msg{padding:11px;border-radius:6px;background:#fff0f0;border-left:4px solid var(--red);margin-top:13px;display:none}
+.badge{display:inline-block;background:#171719;color:#fff;border-left:4px solid var(--red);padding:7px 11px;border-radius:4px;font-size:13px;font-weight:800}
+#app{display:none}
+.profile{overflow:hidden;border-radius:10px;background:#171719;color:#fff;border:1px solid #333}
+.cover{height:145px;background:radial-gradient(circle at 75% 20%,#4b4b4f,#18181a 55%,#0c0c0d);border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:center}
+.cover img{height:125px;width:auto;object-fit:contain}
+.profile-body{padding:0 28px 28px;position:relative}
+.avatar{margin-top:-54px;width:108px;height:108px;border-radius:50%;border:5px solid #171719;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900}
+.profile-name{font-size:29px;font-weight:900;margin-top:10px}
+.username{color:#aaa;margin-top:3px}
+.profile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#343438;margin-top:22px;border:1px solid #343438}
+.info{background:#202023;padding:13px}.info b{display:block;color:#aaa;font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}.info span{font-weight:700}
+.actions{margin-top:18px}
+.actions button{margin-right:7px}
+@media(max-width:650px){
+header{padding:7px 13px}.brand img{height:50px}.brand span{font-size:16px}
+.grid,.profile-grid{grid-template-columns:1fr}.full{grid-column:auto}
+.auth-card{margin:25px auto}.card{padding:20px}
+.profile-body{padding:0 17px 20px}.cover{height:125px}.cover img{height:108px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img src="dmrc-logo.webp" alt="DMRC Logo">
+    <div><span>SCI J</span><small>DMRC PROFILE SYSTEM</small></div>
+  </div>
+  <div id="headUser"></div>
+</header>
+
+<div class="wrap">
+<section id="auth" class="card auth-card">
+  <div class="logo-center"><img src="dmrc-logo.webp" alt="DMRC Logo"></div>
+  <h1>SCI J Account</h1>
+  <p class="muted">Create your unique account or login to access your DMRC Profile.</p>
+
+  <div class="tabs">
+    <button id="showLogin">Login</button>
+    <button class="alt" id="showRegister">Create Account</button>
+  </div>
+
+  <div id="loginBox">
+    <label>Username</label><input id="loginUsername" placeholder="e.g. DMRC00001">
+    <label>Password</label><input id="loginPassword" type="password" minlength="8" autocomplete="current-password">
+    <br><br><button onclick="login()">Login</button>
+  </div>
+
+  <div id="registerBox" style="display:none">
+    <label>Create Password</label>
+    <input id="regPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Minimum 8 characters">
+    <br><br><button onclick="register()">Create Unique Username</button>
+    <p id="newAccount" class="badge" style="display:none"></p>
+  </div>
+  <div id="authMsg" class="msg"></div>
+</section>
+
+<section id="app">
+  <div class="card" id="onboarding">
+    <div class="logo-center"><img src="dmrc-logo.webp" alt="DMRC Logo" style="width:105px"></div>
+    <h2>Complete Your DMRC Profile</h2>
+    <p class="muted">Login করার পর Roll Number, Class এবং আগের application details save করে তোমার profile তৈরি করো।</p>
+    <form id="profileForm" class="grid">
+      <div><label>Student Name *</label><input name="student_name" required></div>
+      <div><label>Roll Number *</label><input name="roll_number" required></div>
+      <div><label>Class *</label><input name="class_name" placeholder="e.g. XI" required></div>
+      <div><label>Father's Name</label><input name="father_name"></div>
+      <div><label>Mother's Name</label><input name="mother_name"></div>
+      <div><label>Contact Number</label><input name="contact"></div>
+      <div><label>Date of Birth</label><input name="dob" type="date"></div>
+      <div><label>Group</label><select name="group_name"><option>Science</option><option>Business Studies</option><option>Humanities</option></select></div>
+      <div><label>Educational Board</label><select name="board"><option>Dhaka</option><option>Chattogram</option><option>Rajshahi</option><option>Jashore</option><option>Comilla</option><option>Barishal</option><option>Sylhet</option><option>Dinajpur</option><option>Mymensingh</option><option>Madrasah</option><option>Technical</option></select></div>
+      <div><label>Qualification</label><input name="qualification" placeholder="e.g. SSC"></div>
+      <div class="full"><label>Present Address</label><input name="address"></div>
+      <div class="full"><button>Save & Open DMRC Profile</button></div>
+    </form>
+    <div id="profileMsg" class="msg"></div>
+  </div>
+
+  <div class="card" id="profileCard" style="display:none">
+    <div class="profile">
+      <div class="cover"><img src="dmrc-logo.webp" alt="DMRC Logo"></div>
+      <div class="profile-body">
+        <div class="avatar" id="avatar">S</div>
+        <div class="profile-name" id="profileName">Student</div>
+        <div class="username" id="profileUsername"></div>
+        <div style="margin-top:10px"><span class="badge">DMRC PROFILE</span></div>
+        <div class="profile-grid">
+          <div class="info"><b>Roll Number</b><span id="profileRoll"></span></div>
+          <div class="info"><b>Class</b><span id="profileClass"></span></div>
+          <div class="info"><b>Group</b><span id="profileGroup"></span></div>
+          <div class="info"><b>Board</b><span id="profileBoard"></span></div>
+        </div>
+        <div class="actions">
+          <button class="alt" onclick="editProfile()">Edit Profile</button>
+          <button onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+const auth=document.getElementById("auth"),app=document.getElementById("app"),authMsg=document.getElementById("authMsg");
+function message(el,text){el.textContent=text;el.style.display="block"}
+document.getElementById("showLogin").onclick=()=>{loginBox.style.display="block";registerBox.style.display="none"};
+document.getElementById("showRegister").onclick=()=>{loginBox.style.display="none";registerBox.style.display="block"};
+
+async function register(){
+ const password=document.getElementById("regPassword").value;
+ if(password.length<8)return message(authMsg,"Password must be at least 8 characters.");
+ const r=await fetch("/api/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password})});
+ const d=await r.json();
+ if(!r.ok)return message(authMsg,d.error);
+ document.getElementById("newAccount").style.display="inline-block";
+ document.getElementById("newAccount").textContent="Your unique username: "+d.username;
+ document.getElementById("loginUsername").value=d.username;
+ document.getElementById("loginPassword").value=password;
+ setTimeout(login,500);
+}
+async function login(){
+ const username=document.getElementById("loginUsername").value,password=document.getElementById("loginPassword").value;
+ if(password.length<8)return message(authMsg,"Password must be at least 8 characters.");
+ const r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
+ const d=await r.json();if(!r.ok)return message(authMsg,d.error);loadMe();
+}
+async function loadMe(){
+ const r=await fetch("/api/me");if(!r.ok)return;
+ const d=await r.json();auth.style.display="none";app.style.display="block";document.getElementById("headUser").textContent=d.user.username;
+ if(d.profile){fillProfile(d.profile);showProfile()}else{document.getElementById("onboarding").style.display="block";document.getElementById("profileCard").style.display="none"}
+}
+function fillProfile(p){const f=document.getElementById("profileForm");Object.keys(p).forEach(k=>{if(f.elements[k])f.elements[k].value=p[k]||""})}
+function showProfile(){fetch("/api/me").then(r=>r.json()).then(d=>{const p=d.profile;if(!p)return;document.getElementById("onboarding").style.display="none";document.getElementById("profileCard").style.display="block";document.getElementById("profileName").textContent=p.student_name;document.getElementById("profileUsername").textContent="@"+d.user.username;document.getElementById("profileRoll").textContent=p.roll_number;document.getElementById("profileClass").textContent=p.class_name;document.getElementById("profileGroup").textContent=p.group_name;document.getElementById("profileBoard").textContent=p.board;document.getElementById("avatar").textContent=(p.student_name||"S").charAt(0).toUpperCase()})}
+document.getElementById("profileForm").onsubmit=async e=>{e.preventDefault();const data=Object.fromEntries(new FormData(e.target));const r=await fetch("/api/profile",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});const d=await r.json();if(!r.ok)return message(profileMsg,d.error);showProfile()};
+function editProfile(){document.getElementById("onboarding").style.display="block";document.getElementById("profileCard").style.display="none"}
+async function logout(){await fetch("/api/logout",{method:"POST"});location.reload()}
+loadMe();
+</script>
+</body>
+</html>
