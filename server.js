@@ -130,6 +130,13 @@ async function syncSqliteBackup() {
   }
 }
 
+let backupSyncPromise=Promise.resolve();
+function queueBackupSync(){
+  if(!backupPool||!db) return Promise.resolve();
+  backupSyncPromise=backupSyncPromise.then(()=>syncSqliteBackup()).catch(err=>console.error("backup queue",err.message));
+  return backupSyncPromise;
+}
+
 async function initDatabase() {
   if (USE_POSTGRES) {
     pool = new Pool({
@@ -323,7 +330,7 @@ async function start() {
       req.session.regenerate(err=>{
         if(err)return res.status(500).json({error:"Could not start secure session."});
         req.session.userId=user.id;
-        req.session.save(saveErr=>saveErr?res.status(500).json({error:"Could not save secure session."}):res.json({ok:true,username}));
+        req.session.save(saveErr=>saveErr?res.status(500).json({error:"Could not save secure session."}):queueBackupSync().then(()=>res.json({ok:true,username})));
       });
     }catch(e){console.error("register",e);res.status(500).json({error:"Could not create account."});}
   });
@@ -346,6 +353,7 @@ async function start() {
     if(avatar&&!/^data:image\/(jpeg|jpg|png|webp);base64,/.test(avatar))return res.status(400).json({error:"Invalid profile picture format."});
     if(avatar.length>1400000)return res.status(400).json({error:"Profile picture is too large. Please choose a smaller image."});
     await dbRun("UPDATE profiles SET avatar_data=? WHERE user_id=?",[avatar||null,req.session.userId]);
+    await queueBackupSync();
     res.json({ok:true});
   });
 
@@ -371,6 +379,7 @@ async function start() {
       await dbRun(`INSERT INTO profiles (user_id,student_name,father_name,mother_name,address,contact,dob,roll_number,class_name,group_name,qualification,board)
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
         ON CONFLICT(user_id) DO UPDATE SET student_name=excluded.student_name,father_name=excluded.father_name,mother_name=excluded.mother_name,address=excluded.address,contact=excluded.contact,dob=excluded.dob,roll_number=excluded.roll_number,class_name=excluded.class_name,group_name=excluded.group_name,qualification=excluded.qualification,board=excluded.board`,[req.session.userId,...values]);
+      await queueBackupSync();
       res.json({ok:true});
     }catch(e){console.error("profile",e);res.status(500).json({error:"Could not save profile."});}
   });
@@ -384,6 +393,7 @@ async function start() {
       if(mediaData&&!allowedMedia.has(mediaType))return res.status(400).json({error:"Unsupported media type."});
       if(mediaData&&!/^data:(image|video)\/[a-z0-9.+-]+;base64,/i.test(mediaData))return res.status(400).json({error:"Invalid media data."});
       const post=await dbGet("INSERT INTO posts (user_id,body,media_data,media_type) VALUES (?,?,?,?) RETURNING id",[req.session.userId,body,mediaData||null,mediaData?mediaType:null]);
+      await queueBackupSync();
       res.json({ok:true,id:post.id});
     }catch(e){console.error("post",e);res.status(500).json({error:"Could not publish post."});}
   });
