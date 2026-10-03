@@ -1,6 +1,6 @@
 {
   "name": "sci-j-dmrc-profile",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "SCI J application, unique login and DMRC student profiles",
   "main": "server.js",
@@ -13,6 +13,7 @@
     "express": "^4.21.1",
     "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3"
   }
 }
