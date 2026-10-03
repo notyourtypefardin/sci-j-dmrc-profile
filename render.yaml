@@ -10,3 +10,13 @@ services:
         value: production
       - key: SESSION_SECRET
         generateValue: true
+      - key: BACKUP_DATABASE_URL
+        fromDatabase:
+          name: sci-j-dmrc-db
+          property: connectionString
+
+databases:
+  - name: sci-j-dmrc-db
+    plan: free
+    region: singapore
+    postgresMajorVersion: "18"
