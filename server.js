@@ -58,6 +58,12 @@ CREATE TABLE IF NOT EXISTS posts (
 
 CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_posts_user_id ON posts(user_id);
+
+CREATE TABLE IF NOT EXISTS sessions (
+  sid TEXT PRIMARY KEY,
+  expires_at INTEGER NOT NULL,
+  data TEXT NOT NULL
+);
 `);
 
 try {
@@ -89,7 +95,54 @@ const apiLimiter = rateLimit({
 });
 
 app.use("/api", apiLimiter);
+class SQLiteSessionStore extends session.Store {
+  constructor(database) {
+    super();
+    this.db = database;
+    this.getStmt = database.prepare("SELECT data, expires_at FROM sessions WHERE sid=?");
+    this.setStmt = database.prepare("INSERT INTO sessions (sid,expires_at,data) VALUES (?,?,?) ON CONFLICT(sid) DO UPDATE SET expires_at=excluded.expires_at,data=excluded.data");
+    this.destroyStmt = database.prepare("DELETE FROM sessions WHERE sid=?");
+    this.touchStmt = database.prepare("UPDATE sessions SET expires_at=? WHERE sid=?");
+  }
+  get(sid, cb) {
+    try {
+      const row = this.getStmt.get(sid);
+      if (!row) return cb(null, null);
+      if (row.expires_at && row.expires_at <= Date.now()) {
+        this.destroyStmt.run(sid);
+        return cb(null, null);
+      }
+      cb(null, JSON.parse(row.data));
+    } catch (e) { cb(e); }
+  }
+  set(sid, sess, cb) {
+    try {
+      const maxAge = Number(sess?.cookie?.maxAge) || 24 * 60 * 60 * 1000;
+      const expiresAt = sess?.cookie?.expires ? new Date(sess.cookie.expires).getTime() : Date.now() + maxAge;
+      this.setStmt.run(sid, expiresAt, JSON.stringify(sess));
+      cb(null);
+    } catch (e) { cb(e); }
+  }
+  destroy(sid, cb) {
+    try { this.destroyStmt.run(sid); cb(null); } catch (e) { cb(e); }
+  }
+  touch(sid, sess, cb) {
+    try {
+      const maxAge = Number(sess?.cookie?.maxAge) || 24 * 60 * 60 * 1000;
+      const expiresAt = sess?.cookie?.expires ? new Date(sess.cookie.expires).getTime() : Date.now() + maxAge;
+      this.touchStmt.run(expiresAt, sid);
+      cb(null);
+    } catch (e) { cb(e); }
+  }
+}
+
+const sessionStore = new SQLiteSessionStore(db);
+const cleanupSessions = db.prepare("DELETE FROM sessions WHERE expires_at <= ?");
+const sessionCleanupTimer = setInterval(() => cleanupSessions.run(Date.now()), 15 * 60 * 1000);
+sessionCleanupTimer.unref();
+
 app.use(session({
+  store: sessionStore,
   secret: process.env.SESSION_SECRET || "change-this-secret-in-production",
   resave: false,
   saveUninitialized: false,
