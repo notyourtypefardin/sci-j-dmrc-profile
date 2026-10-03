@@ -52,7 +52,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", maxAge: 24 * 60 * 60 * 1000 }
 }));
-app.use(express.static(path.join(__dirname, "public"), {\n  setHeaders: (res, filePath) => {\n    if (filePath.endsWith("index.html")) {\n      res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");\n      res.setHeader("Pragma", "no-cache");\n      res.setHeader("Expires", "0");\n    }\n  }\n}));
+app.use(express.static(path.join(__dirname, "public")));
 
 function requireLogin(req, res, next) {
   if (!req.session.userId) return res.status(401).json({ error: "Login required." });
