@@ -1,20 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 680" role="img" aria-label="DMRC logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700" role="img" aria-label="DMRC logo">
 <defs>
- <linearGradient id="red" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ff2028"/><stop offset="1" stop-color="#d3131b"/></linearGradient>
- <linearGradient id="sun" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd51a"/><stop offset="1" stop-color="#ff8d00"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#ffd91a"/><stop offset="1" stop-color="#ffb300"/></radialGradient>
+ <path id="topArc" d="M95 170 Q300 55 505 170"/>
+ <path id="bottomArc" d="M105 535 Q300 625 495 535"/>
 </defs>
-<path d="M300 18C455 18 546 58 566 72L552 420C546 530 468 615 300 662C132 615 54 530 48 420L34 72C54 58 145 18 300 18Z" fill="#211f20" stroke="#ef2028" stroke-width="16"/>
-<path d="M55 74Q300 5 545 74" fill="none" stroke="#ef2028" stroke-width="13"/>
-<text x="300" y="178" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="105" font-weight="900" fill="#fff" letter-spacing="-5">DMRC</text>
-<g transform="translate(0 8)">
- <g fill="url(#sun)" stroke="#f4c400" stroke-width="2">
-  <path d="M300 220l-8 91h16z"/><path d="M246 230l30 86 13-7z"/><path d="M354 230l-43 79 13 7z"/>
-  <path d="M200 263l73 52 8-13z"/><path d="M400 263l-81 39 8 13z"/><path d="M170 315l102 12 1-14z"/><path d="M430 315l-103-2-1 14z"/>
- </g>
- <circle cx="300" cy="326" r="68" fill="#ef2a31"/>
- <path d="M188 345Q245 292 300 350Q355 292 412 345L412 415Q355 374 300 420Q245 374 188 415Z" fill="#fff" stroke="#111" stroke-width="9"/>
- <path d="M300 350V420" stroke="#111" stroke-width="7"/>
- <path d="M188 415Q245 450 300 420Q355 450 412 415" fill="none" stroke="#111" stroke-width="7"/>
+<path d="M300 15 C445 15 548 57 582 78 L555 468 C548 570 470 648 300 690 C130 648 52 570 45 468 L18 78 C52 57 155 15 300 15Z" fill="#211f20" stroke="#ef2028" stroke-width="16"/>
+<text fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="94" font-weight="900" letter-spacing="1"><textPath href="#topArc" startOffset="50%" text-anchor="middle">DMRC</textPath></text>
+<g fill="url(#sun)" stroke="#f5bd00" stroke-width="2">
+ <path d="M300 198l-9 125h18z"/><path d="M263 203l13 120 16-4z"/><path d="M337 203l-29 116 16 4z"/>
+ <path d="M228 218l43 106 15-9z"/><path d="M372 218l-58 97 15 9z"/>
+ <path d="M196 245l74 85 12-12z"/><path d="M404 245l-86 73 12 12z"/>
+ <path d="M172 280l104 55 7-15z"/><path d="M428 280l-111 40 7 15z"/>
+ <path d="M158 320l119 20 2-16z"/><path d="M442 320l-121 4 2 16z"/>
 </g>
-<text x="300" y="572" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="48" font-weight="900" fill="#ffd21a">ESTD 2010</text>
+<circle cx="300" cy="340" r="72" fill="#ef2931"/>
+<path d="M165 365 Q232 305 300 372 Q368 305 435 365 L435 445 Q367 395 300 450 Q233 395 165 445Z" fill="#fff" stroke="#111" stroke-width="10"/>
+<path d="M300 370V450" stroke="#111" stroke-width="8"/>
+<path d="M165 445 Q232 480 300 450 Q368 480 435 445" fill="none" stroke="#111" stroke-width="8"/>
+<text fill="#ffd21a" font-family="Arial,Helvetica,sans-serif" font-size="47" font-weight="900" letter-spacing="1"><textPath href="#bottomArc" startOffset="50%" text-anchor="middle">ESTD 2010</textPath></text>
 </svg>
