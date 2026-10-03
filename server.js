@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 );
 `);
 
-app.use(express.json());
+app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
   secret: process.env.SESSION_SECRET || "change-this-secret-in-production",
@@ -94,6 +94,19 @@ app.post("/api/login", async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: "Login failed." });
   }
+});
+
+
+app.post("/api/profile/avatar", requireLogin, (req, res) => {
+  const avatar = String(req.body.avatar_data || "");
+  if (avatar && !/^data:image\/(jpeg|jpg|png|webp);base64,/.test(avatar)) {
+    return res.status(400).json({ error: "Invalid profile picture format." });
+  }
+  if (avatar.length > 1400000) {
+    return res.status(400).json({ error: "Profile picture is too large. Please choose a smaller image." });
+  }
+  db.prepare("UPDATE profiles SET avatar_data=? WHERE user_id=?").run(avatar || null, req.session.userId);
+  res.json({ ok: true });
 });
 
 app.post("/api/logout", (req, res) => {
