@@ -33,9 +33,16 @@ CREATE TABLE IF NOT EXISTS profiles (
   group_name TEXT,
   qualification TEXT,
   board TEXT,
+  avatar_data TEXT,
   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 `);
+
+try {
+  db.exec("ALTER TABLE profiles ADD COLUMN avatar_data TEXT");
+} catch (e) {
+  if (!String(e.message).includes("duplicate column name")) throw e;
+}
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
