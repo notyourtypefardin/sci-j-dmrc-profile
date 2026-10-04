@@ -166,6 +166,7 @@ async function ensureAiMemory(userId){
 }
 async function aiBuiltInReply(message,userId){
   const q=message.toLowerCase();
+  if(q.startsWith("remember:")||q.startsWith("মনে রাখো:")){const raw=message.replace(/^(remember:|মনে রাখো:)\s*/i,"").trim();if(raw){const key=("note-"+Date.now()).slice(0,60);await dbRun("INSERT INTO ai_memories(user_id,memory_key,content) VALUES(?,?,?)",[userId,key,raw]);return "ঠিক আছে — আমি এই তথ্যটা Personal AI memory-তে save করেছি।";}}
   if(/^(hi|hello|hey|salam|assalamu)/.test(q)) return "Hey Siuuu 👋 আমি তোমার SCI J Personal AI। এখন $0 Knowledge Mode-এ আছি—তোমার SCI J-এর saved knowledge, memory আর project rules ধরে সাহায্য করতে পারি।";
   if(q.includes("who are you")||q.includes("তুমি কে")||q.includes("personal ai")){
     return "আমি SCI J Personal AI। এই free mode-এ আমি তোমার project knowledge, saved memory এবং গুরুত্বপূর্ণ rules ধরে কাজ করি। পরে server-side AI provider যোগ করলে general AI reasoning-ও পাওয়া যাবে।";
