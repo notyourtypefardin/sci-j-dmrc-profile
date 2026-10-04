@@ -13,14 +13,10 @@ services:
         value: "22.14.0"
       - key: USE_POSTGRES
         value: "true"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: sci-j-dmrc-db
-          property: connectionString
-      - key: BACKUP_DATABASE_URL
-        fromDatabase:
-          name: sci-j-dmrc-db
-          property: connectionString
+      - key: SUPABASE_DATABASE_URL
+        sync: false
+      - key: MIGRATE_SQLITE_TO_POSTGRES
+        value: "true"
       - key: SESSION_SECRET
         generateValue: true
       - key: ADMIN_USERNAME
@@ -29,9 +25,3 @@ services:
         sync: false
       - key: DB_PATH
         value: sci_j_fresh_v2.db
-
-databases:
-  - name: sci-j-dmrc-db
-    plan: free
-    region: singapore
-    postgresMajorVersion: "18"
