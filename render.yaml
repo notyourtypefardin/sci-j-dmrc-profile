@@ -27,6 +27,8 @@ services:
         sync: false
       - key: ADMIN_PASSWORD_HASH
         sync: false
+      - key: DB_PATH
+        value: sci_j_fresh_v2.db
 
 databases:
   - name: sci-j-dmrc-db
