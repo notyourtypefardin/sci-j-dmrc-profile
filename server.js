@@ -12,7 +12,9 @@ app.disable("x-powered-by");
 app.set("trust proxy", 1);
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = "0.0.0.0";
-const USE_POSTGRES = process.env.USE_POSTGRES === "true" && Boolean(process.env.DATABASE_URL || process.env.BACKUP_DATABASE_URL);
+const POSTGRES_URL = process.env.SUPABASE_DATABASE_URL || process.env.DATABASE_URL || process.env.BACKUP_DATABASE_URL;
+const USE_POSTGRES = process.env.USE_POSTGRES === "true" && Boolean(POSTGRES_URL);
+const MIGRATE_SQLITE_TO_POSTGRES = process.env.MIGRATE_SQLITE_TO_POSTGRES === "true";
 let db, pool;
 
 function qmarks(sql){let i=0;return sql.replace(/\?/g,()=>"$"+(++i));}
@@ -24,9 +26,51 @@ function bool(v){return v===true||v==="true"||v===1||v==="1";}
 function requireLogin(req,res,next){if(!req.session.userId)return res.status(401).json({error:"Login required."});next();}
 function requireAdmin(req,res,next){if(!req.session.adminId)return res.status(403).json({error:"Admin access required."});next();}
 
+async function migrateSqliteToPostgres(){
+  const sqlitePath=process.env.DB_PATH||path.join(__dirname,"sci_j.db");
+  if(!fs.existsSync(sqlitePath)){console.warn("SQLite migration skipped: database file not found.");return;}
+  const Database=require("better-sqlite3");
+  const sdb=new Database(sqlitePath,{readonly:true});
+  try{
+    const existing=await pool.query("SELECT COUNT(*)::int AS count FROM users");
+    if(Number(existing.rows[0]?.count||0)>0){console.log("SQLite migration skipped: Postgres already contains users.");return;}
+    const tables=["users","profiles","posts","post_likes","comments","post_shares"];
+    const data={};
+    for(const t of tables){try{data[t]=sdb.prepare("SELECT * FROM "+t).all()}catch{data[t]=[]}}
+    await pool.query("BEGIN");
+    for(const r of data.users){
+      await pool.query("INSERT INTO users(id,username,password_hash,created_at) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING",[r.id,r.username,r.password_hash,r.created_at||null]);
+    }
+    for(const r of data.profiles){
+      await pool.query("INSERT INTO profiles(id,user_id,student_name,father_name,mother_name,address,contact,dob,roll_number,class_name,group_name,qualification,board,avatar_data,privacy_father,privacy_mother,privacy_contact,privacy_address,created_at,updated_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) ON CONFLICT DO NOTHING",[r.id,r.user_id,r.student_name,r.father_name,r.mother_name,r.address,r.contact,r.dob,r.roll_number,r.class_name,r.group_name,r.qualification,r.board,r.avatar_data,Boolean(r.privacy_father),Boolean(r.privacy_mother),Boolean(r.privacy_contact),Boolean(r.privacy_address),r.created_at||null,r.updated_at||r.created_at||null]);
+    }
+    for(const r of data.posts){
+      await pool.query("INSERT INTO posts(id,user_id,body,media_data,media_type,created_at,updated_at) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING",[r.id,r.user_id,r.body||"",r.media_data,r.media_type,r.created_at||null,r.updated_at||r.created_at||null]);
+    }
+    for(const r of data.post_likes){
+      await pool.query("INSERT INTO post_likes(post_id,user_id,created_at) VALUES($1,$2,$3) ON CONFLICT DO NOTHING",[r.post_id,r.user_id,r.created_at||null]);
+    }
+    for(const r of data.comments){
+      await pool.query("INSERT INTO comments(id,post_id,user_id,body,created_at,updated_at) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING",[r.id,r.post_id,r.user_id,r.body||"",r.created_at||null,r.updated_at||r.created_at||null]);
+    }
+    for(const r of data.post_shares){
+      await pool.query("INSERT INTO post_shares(id,post_id,user_id,created_at) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING",[r.id,r.post_id,r.user_id,r.created_at||null]);
+    }
+    for(const t of ["users","profiles","posts","comments","post_shares"]){
+      await pool.query("SELECT setval(pg_get_serial_sequence($1,'id'),COALESCE((SELECT MAX(id) FROM "+t+"),1),true)",[t]);
+    }
+    await pool.query("DELETE FROM sessions");
+    await pool.query("COMMIT");
+    console.log("SQLite migration complete:",Object.fromEntries(tables.map(t=>[t,data[t].length])));
+  }catch(e){
+    try{await pool.query("ROLLBACK")}catch{}
+    throw e;
+  }finally{sdb.close()}
+}
+
 async function initDatabase(){
   if(USE_POSTGRES){
-    pool=new Pool({connectionString:process.env.DATABASE_URL || process.env.BACKUP_DATABASE_URL,max:8,idleTimeoutMillis:30000,connectionTimeoutMillis:10000,ssl:{rejectUnauthorized:false}});
+    pool=new Pool({connectionString:POSTGRES_URL,max:4,idleTimeoutMillis:30000,connectionTimeoutMillis:10000,ssl:{rejectUnauthorized:false}});
     await pool.query("SELECT 1");
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users(id BIGSERIAL PRIMARY KEY,username TEXT NOT NULL UNIQUE,password_hash TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP);
@@ -49,6 +93,7 @@ async function initDatabase(){
     await pool.query("ALTER TABLE profiles ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP");
     await pool.query("ALTER TABLE profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP");
     await pool.query("ALTER TABLE posts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP");
+    if(MIGRATE_SQLITE_TO_POSTGRES) await migrateSqliteToPostgres();
     return;
   }
   const Database = require("better-sqlite3");
