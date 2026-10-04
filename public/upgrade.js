@@ -168,24 +168,27 @@ window.addEventListener('load',()=>{loadCreatorIntro();let n=0;const t=setInterv
   window.addEventListener('load',addSignature);
 })();
 
-/* Home + Search premium campus background */
+/* Home + Search performance layer */
 (()=>{const s=document.createElement('style');s.textContent=`
 :root{--campus-bg-premium:url('/file_000000004ea4820883ccbb5d217d3d92.png')}
 .home-bg,.search-shell{isolation:isolate}
-.home-bg{background:var(--campus-bg-premium) center/cover no-repeat!important;overflow:hidden!important;filter:saturate(1.05) contrast(1.05) brightness(.52)!important;animation:campusFloat 22s ease-in-out infinite alternate!important}
-.home-bg:before,.search-shell:before{content:"";position:absolute;inset:-8%;background:var(--campus-bg-premium) center/cover no-repeat;transform:scaleX(-1) scale(1.08);opacity:.20;filter:blur(16px) saturate(1.12) brightness(.72);mix-blend-mode:screen;animation:campusMirror 28s ease-in-out infinite alternate}
-.home-bg:after,.search-shell:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 12%,#ed1c2418,transparent 34%),radial-gradient(circle at 50% 75%,#0b16251c,transparent 48%),linear-gradient(180deg,#03070c40 0%,#03060ba8 55%,#020407f0 100%);backdrop-filter:blur(1.5px) saturate(108%);-webkit-backdrop-filter:blur(1.5px) saturate(108%);z-index:1}
-.home-bg:before{z-index:0}
+.home-bg{background:var(--campus-bg-premium) center/cover no-repeat!important;overflow:hidden!important;filter:saturate(1.02) contrast(1.02) brightness(.55)!important}
+.home-bg:before,.search-shell:before{content:"";position:absolute;inset:-3%;background:var(--campus-bg-premium) center/cover no-repeat;transform:scaleX(-1);opacity:.14;filter:blur(8px) brightness(.72);z-index:0}
+.home-bg:after,.search-shell:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 12%,#ed1c2414,transparent 34%),linear-gradient(180deg,#03070c38 0%,#03060bb0 58%,#020407ee 100%);z-index:1}
 .search-shell{background:#05070a!important}
-.search-shell:before{inset:-12%;filter:blur(18px) brightness(.48) saturate(1.1);transform:scaleX(-1) scale(1.10);opacity:.24;z-index:0;animation:campusMirror 30s ease-in-out infinite alternate}
+.search-shell:before{inset:-4%;opacity:.16;filter:blur(9px) brightness(.55)}
 .search-shell:after{z-index:1}
-.search-panel{animation:premiumPanelIn .7s var(--ease) both;box-shadow:0 30px 90px #0009,inset 0 1px 0 #ffffff18!important}
-.search-result{animation:resultRise .42s var(--ease) both}
-.search-result:nth-child(2){animation-delay:.03s}.search-result:nth-child(3){animation-delay:.06s}.search-result:nth-child(4){animation-delay:.09s}.search-result:nth-child(5){animation-delay:.12s}
-@keyframes campusFloat{from{background-position:50% 48%;transform:scale(1)}to{background-position:51% 52%;transform:scale(1.025)}}
-@keyframes campusMirror{from{transform:translate3d(-1%,0,0) scaleX(-1) scale(1.08);opacity:.16}to{transform:translate3d(1%,1%,0) scaleX(-1) scale(1.12);opacity:.25}}
-@keyframes premiumPanelIn{from{opacity:0;transform:translateY(18px) scale(.985);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
-@keyframes resultRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media(max-width:600px){.home-bg{inset:64px 0 0!important}.search-shell{min-height:calc(100dvh - 88px)!important}.search-panel{backdrop-filter:blur(20px) saturate(128%)!important;-webkit-backdrop-filter:blur(20px) saturate(128%)!important}}
-@media(prefers-reduced-motion:reduce){.home-bg,.home-bg:before,.search-shell:before,.search-panel,.search-result{animation:none!important}}
+.search-panel{animation:premiumPanelIn .35s ease-out both;box-shadow:0 18px 50px #0008,inset 0 1px 0 #ffffff18!important}
+.search-result{animation:resultRise .24s ease-out both;contain:layout paint}
+.search-result:nth-child(n){animation-delay:0s}
+@keyframes premiumPanelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes resultRise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(max-width:600px){
+  .home-bg{inset:64px 0 0!important;background-attachment:scroll!important}
+  .home-bg:before,.search-shell:before{filter:blur(5px) brightness(.62)!important;opacity:.10}
+  .home-bg:after,.search-shell:after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .search-shell{min-height:calc(100dvh - 88px)!important}
+  .search-panel{backdrop-filter:blur(7px) saturate(112%)!important;-webkit-backdrop-filter:blur(7px) saturate(112%)!important;background:#11151bcf!important}
+}
+@media(prefers-reduced-motion:reduce){.search-panel,.search-result{animation:none!important}}
 `;document.head.appendChild(s)})();
