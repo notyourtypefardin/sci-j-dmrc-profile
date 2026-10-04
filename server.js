@@ -1,7 +1,6 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const Database = require("better-sqlite3");
 const { Pool } = require("pg");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
@@ -13,7 +12,7 @@ app.disable("x-powered-by");
 app.set("trust proxy", 1);
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = "0.0.0.0";
-const USE_POSTGRES = process.env.USE_POSTGRES === "true" && Boolean(process.env.DATABASE_URL);
+const USE_POSTGRES = process.env.USE_POSTGRES === "true" && Boolean(process.env.DATABASE_URL || process.env.BACKUP_DATABASE_URL);
 let db, pool;
 
 function qmarks(sql){let i=0;return sql.replace(/\?/g,()=>"$"+(++i));}
@@ -27,7 +26,7 @@ function requireAdmin(req,res,next){if(!req.session.adminId)return res.status(40
 
 async function initDatabase(){
   if(USE_POSTGRES){
-    pool=new Pool({connectionString:process.env.DATABASE_URL,max:8,idleTimeoutMillis:30000,connectionTimeoutMillis:10000,ssl:{rejectUnauthorized:false}});
+    pool=new Pool({connectionString:process.env.DATABASE_URL || process.env.BACKUP_DATABASE_URL,max:8,idleTimeoutMillis:30000,connectionTimeoutMillis:10000,ssl:{rejectUnauthorized:false}});
     await pool.query("SELECT 1");
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users(id BIGSERIAL PRIMARY KEY,username TEXT NOT NULL UNIQUE,password_hash TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP);
@@ -52,6 +51,7 @@ async function initDatabase(){
     await pool.query("ALTER TABLE posts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP");
     return;
   }
+  const Database = require("better-sqlite3");
   db=new Database(process.env.DB_PATH||path.join(__dirname,"sci_j.db"));
   db.pragma("journal_mode=WAL");db.pragma("synchronous=FULL");db.pragma("foreign_keys=ON");db.pragma("busy_timeout=5000");
   db.exec(`
