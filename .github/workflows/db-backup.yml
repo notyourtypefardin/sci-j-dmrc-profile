@@ -1,0 +1,34 @@
+name: SCI J database backup
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 18 * * 0"
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Dump and encrypt database
+        env:
+          DATABASE_URL: ${{ secrets.SCI_J_DATABASE_URL }}
+          BACKUP_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        run: |
+          test -n "$DATABASE_URL"
+          test -n "$BACKUP_KEY"
+          mkdir -p backup
+          pg_dump --format=custom --no-owner --no-privileges "$DATABASE_URL" > backup/sci-j-$(date -u +%Y-%m-%d).dump
+          openssl enc -aes-256-cbc -pbkdf2 -salt -in backup/sci-j-$(date -u +%Y-%m-%d).dump -out backup/sci-j-$(date -u +%Y-%m-%d).dump.enc -pass env:BACKUP_KEY
+          rm backup/*.dump
+
+      - name: Upload encrypted backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: sci-j-database-backup-${{ github.run_number }}
+          path: backup/*.enc
+          retention-days: 30
