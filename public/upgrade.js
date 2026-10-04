@@ -22,3 +22,19 @@ window.showPage=function(name){searchBind();const next=document.getElementById(n
 function addSearchNav(){const n=document.querySelector('.nav');if(!n)return;makeSearch();let b=document.getElementById('profileSearchNav');if(!b){b=document.createElement('button');b.id='profileSearchNav';b.className='search-nav-btn';b.title='Search students';b.setAttribute('aria-label','Search students');b.innerHTML='<svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 5 5"></path></svg>';n.insertBefore(b,profileNav)}b.onclick=()=>showPage('search');const a=document.getElementById('aiNav');if(a){a.onclick=()=>showPage('ai');a.title='Personal AI';a.setAttribute('aria-label','Personal AI')}document.getElementById('profileSearch')?.remove();n.style.setProperty('--nav-index','0')}
 window.addEventListener('load',()=>{addSearchNav();searchBind()});
 })();
+/* Creator signature */
+(()=>{
+  const css=document.createElement('style');
+  css.textContent='.creator-signature{display:block;width:min(260px,78vw);height:auto;margin:10px auto 0;filter:brightness(0) invert(1) drop-shadow(0 6px 16px #0008);opacity:.92;object-fit:contain}.creator-signature-wrap{margin-top:8px;text-align:center}.creator-signature-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8f949e;margin-bottom:2px}';
+  document.head.appendChild(css);
+  function addSignature(){
+    const card=document.querySelector('.creator-intro');
+    if(!card||card.querySelector('.creator-signature-wrap'))return;
+    const wrap=document.createElement('div');
+    wrap.className='creator-signature-wrap';
+    wrap.innerHTML='<div class="creator-signature-label">Siuuu • Creator Signature</div><img class="creator-signature" src="/signature.svg?v=1" alt="Siuuu creator signature" loading="eager" decoding="async">';
+    card.appendChild(wrap);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addSignature);else addSignature();
+  window.addEventListener('load',addSignature);
+})();
