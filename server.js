@@ -85,6 +85,10 @@ async function initDatabase(){
       CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id,created_at);
       CREATE INDEX IF NOT EXISTS idx_profiles_username ON users(username);
       CREATE INDEX IF NOT EXISTS idx_profiles_roll ON profiles(roll_number);
+      CREATE TABLE IF NOT EXISTS ai_memories(id BIGSERIAL PRIMARY KEY,user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,memory_key TEXT NOT NULL,content TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,UNIQUE(user_id,memory_key));
+      CREATE TABLE IF NOT EXISTS ai_messages(id BIGSERIAL PRIMARY KEY,user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,role TEXT NOT NULL,content TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP);
+      CREATE INDEX IF NOT EXISTS idx_ai_memories_user ON ai_memories(user_id);
+      CREATE INDEX IF NOT EXISTS idx_ai_messages_user ON ai_messages(user_id,created_at DESC);
     `);
     await pool.query("ALTER TABLE profiles ADD COLUMN IF NOT EXISTS privacy_father BOOLEAN NOT NULL DEFAULT FALSE");
     await pool.query("ALTER TABLE profiles ADD COLUMN IF NOT EXISTS privacy_mother BOOLEAN NOT NULL DEFAULT FALSE");
@@ -141,6 +145,63 @@ async function ensureAdmin(){
   await dbRun("INSERT INTO users(username,password_hash) VALUES(?,?)",[username,hash]);
 }
 
+const AI_DEFAULT_MEMORIES=[
+  ["identity","SCI J is the DMRC student community website. The owner wants a secure, polished, mobile-first student social platform."],
+  ["creator","Creator introduction: Hey, I'm Fardin (you can also call me Siuuu), a Science student at DMRC (Section J)."],
+  ["security","Never expose passwords, database credentials, access tokens, session secrets or other secrets. Personal AI is owner-only and destructive actions must be protected."],
+  ["product","SCI J supports student profiles, public roll numbers, posts with photo/video, likes, comments, shares, profile search, visitor profiles, privacy controls for father/mother/contact/address, admin moderation and backups."],
+  ["free_mode","The Personal AI must prioritize a $0 setup. Built-in knowledge mode works without an AI API. An external OpenAI-compatible provider can be enabled later with server-side environment variables."]
+];
+async function ensureAiMemory(userId){
+  for(const [k,c] of AI_DEFAULT_MEMORIES){
+    await dbRun("INSERT INTO ai_memories(user_id,memory_key,content) VALUES(?,?,?) ON CONFLICT(user_id,memory_key) DO NOTHING",[userId,k,c]);
+  }
+}
+async function aiBuiltInReply(message,userId){
+  const q=message.toLowerCase();
+  if(/^(hi|hello|hey|salam|assalamu)/.test(q)) return "Hey Siuuu 👋 আমি তোমার SCI J Personal AI। এখন $0 Knowledge Mode-এ আছি—তোমার SCI J-এর saved knowledge, memory আর project rules ধরে সাহায্য করতে পারি।";
+  if(q.includes("who are you")||q.includes("তুমি কে")||q.includes("personal ai")){
+    return "আমি SCI J Personal AI। এই free mode-এ আমি তোমার project knowledge, saved memory এবং গুরুত্বপূর্ণ rules ধরে কাজ করি। পরে server-side AI provider যোগ করলে general AI reasoning-ও পাওয়া যাবে।";
+  }
+  if(q.includes("creator")||q.includes("fardin")||q.includes("siuuu")){
+    return "Creator's Introduction: Hey, I'm Fardin (you can also call me Siuuu), a Science student at DMRC (Section J).";
+  }
+  if(q.includes("roll")||q.includes("রোল")) return "SCI J-এ Roll Number visitor profile-এ visible থাকবে। Roll privacy control সরানো হয়েছে।";
+  if(q.includes("security")||q.includes("নিরাপত্তা")||q.includes("secure")){
+    return "Security rules: owner-only Personal AI, server-side secrets, authenticated sessions, rate limits, password hashing, permission checks এবং destructive actions-এর জন্য access control।";
+  }
+  if(q.includes("telegram")) return "Telegram integration এখন core AI-এর পরে করার জন্য রাখা হয়েছে। Bot token server-side secret হিসেবে রাখতে হবে।";
+  if(q.includes("whatsapp")) return "WhatsApp integration পরে করা হবে। এখন Personal AI core ও SCI J integration আগে।";
+  if(q.includes("feature")||q.includes("কি কি")||q.includes("what can")){
+    return "আমি SCI J-এর profiles, posts, likes, comments, shares, student search, visitor profiles, admin moderation, backups এবং তোমার saved project instructions সম্পর্কে context রাখতে পারি।";
+  }
+  if(q.includes("status")||q.includes("অবস্থা")){
+    const [u,p,c,l]=await Promise.all([dbGet("SELECT COUNT(*) count FROM users"),dbGet("SELECT COUNT(*) count FROM posts"),dbGet("SELECT COUNT(*) count FROM comments"),dbGet("SELECT COUNT(*) count FROM post_likes")]);
+    return `SCI J status: ${Number(u?.count||0)} users, ${Number(p?.count||0)} posts, ${Number(c?.count||0)} comments, ${Number(l?.count||0)} likes. Personal AI is running in free Knowledge Mode.`;
+  }
+  if(q.includes("memory")||q.includes("মনে")||q.includes("remember")){
+    const rows=await dbAll("SELECT memory_key,content FROM ai_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 20",[userId]);
+    return "Saved AI memory:\n"+rows.map(x=>"• "+x.memory_key+": "+x.content).join("\n");
+  }
+  return "আমি এই প্রশ্নের উত্তর SCI J-এর saved knowledge থেকে নিশ্চিতভাবে দিতে পারছি না। তুমি চাইলে এটাকে AI memory হিসেবে save করতে পারো, অথবা পরে একটি server-side AI provider যুক্ত করলে আমি broader reasoning করতে পারব।";
+}
+async function aiExternalReply(message,history,memories){
+  const url=String(process.env.AI_API_URL||"").trim(),key=String(process.env.AI_API_KEY||"").trim();
+  if(!url||!key) return null;
+  const model=String(process.env.AI_MODEL||"gpt-6-luna").trim();
+  const system="You are SCI J Personal AI. Be concise, helpful and bilingual when useful. Never reveal secrets. Project knowledge:\n"+memories.map(x=>x.content).join("\n");
+  const input=[{role:"system",content:system},...history.map(x=>({role:x.role,content:x.content})),{role:"user",content:message}];
+  const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({model,messages:input,temperature:0.3,max_tokens:700})});
+  if(!r.ok) throw new Error("AI provider returned "+r.status);
+  const d=await r.json();
+  return d?.choices?.[0]?.message?.content?.trim()||null;
+}
+async function requirePersonalAI(req,res,next){
+  if(!req.session.userId)return res.status(401).json({error:"Login required."});
+  if(!req.session.adminId)return res.status(403).json({error:"Personal AI is owner-only."});
+  next();
+}
+
 async function start(){
   await initDatabase();await ensureAdmin();
   app.use(helmet({contentSecurityPolicy:false,crossOriginEmbedderPolicy:false,referrerPolicy:{policy:"strict-origin-when-cross-origin"}}));
@@ -151,7 +212,7 @@ async function start(){
   app.use(session({store:new SessionStore(),secret:process.env.SESSION_SECRET||"unsafe-dev-secret",resave:false,saveUninitialized:false,cookie:{httpOnly:true,sameSite:"strict",secure:process.env.NODE_ENV==="production",maxAge:86400000}}));
   app.get("/",(req,res,next)=>{try{const file=path.join(__dirname,"public","index.html");const html=fs.readFileSync(file,"utf8").replace("</body>",'<script src="/upgrade.js"></script></body>');res.set("Cache-Control","no-store, no-cache, must-revalidate, proxy-revalidate");res.set("Pragma","no-cache");res.set("Expires","0");res.type("html").send(html)}catch(e){next(e)}});
   app.get("/upgrade.js",(req,res,next)=>{try{res.set("Cache-Control","no-store, no-cache, must-revalidate, proxy-revalidate");res.type("application/javascript").send(fs.readFileSync(path.join(__dirname,"public","upgrade.js"),"utf8"))}catch(e){next(e)}});app.use(express.static(path.join(__dirname,"public"),{etag:true,maxAge:"1h"}));
-  app.get("/healthz",(req,res)=>res.json({ok:true,database:USE_POSTGRES?"postgres":"sqlite",features:["social","privacy","admin","profile-search"]}));
+  app.get("/healthz",(req,res)=>res.json({ok:true,database:USE_POSTGRES?"postgres":"sqlite",features:["social","privacy","admin","profile-search","personal-ai"]}));
 
   app.post("/api/register",authLimiter,async(req,res)=>{try{const pw=String(req.body.password||"");if(pw.length<8||pw.length>128)return res.status(400).json({error:"Password must be 8–128 characters."});let n=Number((await dbGet("SELECT COUNT(*) count FROM users"))?.count||0)+1,username;do{username="DMRC"+String(n++).padStart(5,"0")}while(await dbGet("SELECT id FROM users WHERE username=?",[username]));const u=USE_POSTGRES?await dbGet("INSERT INTO users(username,password_hash) VALUES(?,?) RETURNING id,username",[username,await bcrypt.hash(pw,12)]):(await dbRun("INSERT INTO users(username,password_hash) VALUES(?,?)",[username,await bcrypt.hash(pw,12)]),await dbGet("SELECT id,username FROM users WHERE username=?",[username]));req.session.regenerate(e=>{if(e)return res.status(500).json({error:"Could not start secure session."});req.session.userId=u.id;req.session.save(se=>se?res.status(500).json({error:"Could not save session."}):res.json({ok:true,username:u.username}))})}catch(e){console.error(e);res.status(500).json({error:"Could not create account."})}});
   app.post("/api/login",authLimiter,async(req,res)=>{try{const username=clean(req.body.username,64).toUpperCase(),pw=String(req.body.password||""),u=await dbGet("SELECT * FROM users WHERE UPPER(username)=?",[username]);if(!u||pw.length>128||!(await bcrypt.compare(pw,u.password_hash)))return res.status(401).json({error:"Invalid username or password."});const isAdmin=Boolean(process.env.ADMIN_USERNAME&&username===clean(process.env.ADMIN_USERNAME,64).toUpperCase());req.session.regenerate(e=>{if(e)return res.status(500).json({error:"Could not start secure session."});req.session.userId=u.id;if(isAdmin)req.session.adminId=u.id;req.session.save(se=>se?res.status(500).json({error:"Could not save session."}):res.json({ok:true,username:u.username,admin:isAdmin}))})}catch(e){res.status(500).json({error:"Login failed."})}});
@@ -176,6 +237,12 @@ async function start(){
   app.delete("/api/comments/:id",requireLogin,writeLimiter,async(req,res)=>{const c=await dbGet("SELECT user_id FROM comments WHERE id=?",[Number(req.params.id)]);if(!c)return res.status(404).json({error:"Comment not found."});if(c.user_id!==req.session.userId&&!req.session.adminId)return res.status(403).json({error:"Not allowed."});await dbRun("DELETE FROM comments WHERE id=?",[Number(req.params.id)]);res.json({ok:true})});
   app.post("/api/posts/:id/share",requireLogin,writeLimiter,async(req,res)=>{const id=Number(req.params.id);await dbRun("INSERT INTO post_shares(post_id,user_id) VALUES(?,?)",[id,req.session.userId]);const n=await dbGet("SELECT COUNT(*) count FROM post_shares WHERE post_id=?",[id]);res.json({count:Number(n?.count||0),url:`${req.protocol}://${req.get("host")}/?post=${id}`})});
 
+  app.get("/api/ai/history",requirePersonalAI,async(req,res)=>{const rows=await dbAll("SELECT id,role,content,created_at FROM ai_messages WHERE user_id=? ORDER BY id DESC LIMIT 60",[req.session.userId]);res.json(rows.reverse())});
+  app.get("/api/ai/memory",requirePersonalAI,async(req,res)=>{await ensureAiMemory(req.session.userId);res.json(await dbAll("SELECT id,memory_key,content,created_at,updated_at FROM ai_memories WHERE user_id=? ORDER BY id ASC LIMIT 50",[req.session.userId]))});
+  app.post("/api/ai/memory",requirePersonalAI,writeLimiter,async(req,res)=>{const key=clean(req.body.key,60).toLowerCase().replace(/[^a-z0-9_-]/g,"-"),content=clean(req.body.content,2000);if(!key||!content)return res.status(400).json({error:"Memory key and content are required."});await dbRun("INSERT INTO ai_memories(user_id,memory_key,content,updated_at) VALUES(?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(user_id,memory_key) DO UPDATE SET content=excluded.content,updated_at=CURRENT_TIMESTAMP",[req.session.userId,key,content]);res.json({ok:true})});
+  app.delete("/api/ai/memory/:key",requirePersonalAI,writeLimiter,async(req,res)=>{const key=clean(req.params.key,60).toLowerCase();await dbRun("DELETE FROM ai_memories WHERE user_id=? AND memory_key=?",[req.session.userId,key]);res.json({ok:true})});
+  app.post("/api/ai/chat",requirePersonalAI,writeLimiter,async(req,res)=>{try{const message=clean(req.body.message,2000);if(!message)return res.status(400).json({error:"Message is empty."});await ensureAiMemory(req.session.userId);const history=await dbAll("SELECT role,content FROM ai_messages WHERE user_id=? ORDER BY id DESC LIMIT 12",[req.session.userId]);history.reverse();const memories=await dbAll("SELECT memory_key,content FROM ai_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 30",[req.session.userId]);await dbRun("INSERT INTO ai_messages(user_id,role,content) VALUES(?,?,?)",[req.session.userId,"user",message]);let answer=null,mode="builtin";try{answer=await aiExternalReply(message,history,memories);if(answer)mode="external"}catch(e){console.warn("AI provider unavailable; using built-in mode:",e.message)}if(!answer)answer=await aiBuiltInReply(message,req.session.userId);await dbRun("INSERT INTO ai_messages(user_id,role,content) VALUES(?,?,?)",[req.session.userId,"assistant",answer]);res.json({ok:true,answer,mode})}catch(e){console.error(e);res.status(500).json({error:"Personal AI failed."})}});
+  
   app.get("/api/admin/posts",requireLogin,requireAdmin,async(req,res)=>res.json(await dbAll(`SELECT p.id,p.body,p.created_at,u.username,pr.student_name FROM posts p JOIN users u ON u.id=p.user_id LEFT JOIN profiles pr ON pr.user_id=p.user_id ORDER BY p.created_at DESC LIMIT 200`)));
   app.get("/api/admin/comments",requireLogin,requireAdmin,async(req,res)=>res.json(await dbAll(`SELECT c.id,c.body,c.created_at,u.username,p.student_name FROM comments c JOIN users u ON u.id=c.user_id LEFT JOIN profiles p ON p.user_id=c.user_id ORDER BY c.created_at DESC LIMIT 200`)));
   app.delete("/api/admin/posts/:id",requireLogin,requireAdmin,async(req,res)=>{await dbRun("DELETE FROM posts WHERE id=?",[Number(req.params.id)]);res.json({ok:true})});
