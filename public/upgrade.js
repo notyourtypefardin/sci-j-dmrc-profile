@@ -2,25 +2,139 @@
 const origShowPage=window.showPage;window.showPage=function(name){origShowPage(name);if(name==='profile')setTimeout(()=>window.renderProfileExtras?.(),0)};
 function esc2(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 window.openVisitor=async function(username){const r=await fetch('/api/profile/'+encodeURIComponent(username)),d=await r.json();if(!r.ok)return alert(d.error||'Profile unavailable');const p=d.profile;let rows=[['Roll Number',p.roll_number],['Class',p.class_name],['Group',p.group_name],['Board',p.board],['Role',d.role||'STUDENT']];if(p.father_name)rows.push(['Father',p.father_name]);if(p.mother_name)rows.push(['Mother',p.mother_name]);if(p.contact)rows.push(['Contact',p.contact]);if(p.address)rows.push(['Address',p.address]);let modal=document.getElementById('upgradeVisitor');if(!modal){modal=document.createElement('div');modal.id='upgradeVisitor';modal.className='visitor-card';document.body.appendChild(modal)}modal.innerHTML='<div class="visitor-inner glass"><button class="alt" style="float:right" onclick="this.closest(\'.visitor-card\').classList.remove(\'show\')">×</button><div class="visitor-head"><div class="mini-avatar">'+(p.avatar_data?'<img src="'+p.avatar_data+'">':esc2((p.student_name||'D')[0]))+'</div><div><h2 style="margin:0">'+esc2(p.student_name)+'</h2><div class="muted">@'+esc2(d.user.username)+'</div></div></div><div class="profile-grid" style="margin-top:18px">'+rows.map(x=>'<div class="info"><b>'+esc2(x[0])+'</b><span>'+esc2(x[1]||'—')+'</span></div>').join('')+'</div><div class="profile-posts-title">Posts by this student</div><div class="upgrade-visitor-posts">'+(d.posts.length?d.posts.map(p=>window.postHTML(p)).join(''):'<div class="empty">No posts yet.</div>')+'</div></div>';modal.classList.add('show');modal.querySelectorAll('.post').forEach((el,i)=>addSocialToPost(el,d.posts[i]))};
-function injectSearch(){const top=document.querySelector('.topbar');if(!top||document.getElementById('profileSearch'))return;const box=document.createElement('div');box.id='profileSearch';box.style.cssText='position:relative;flex:1;max-width:420px;margin:0 12px';box.innerHTML='<input id="profileSearchInput" placeholder="Search username / roll / name" style="width:100%;border-radius:999px;padding:11px 15px;background:#ffffff08;color:#fff;border:1px solid #ffffff18"><div id="profileSearchResults" class="glass" style="display:none;position:absolute;left:0;right:0;top:48px;z-index:120;border-radius:16px;padding:6px"></div>';top.insertBefore(box,top.querySelector('.head-user')||top.lastChild);const inp=document.getElementById('profileSearchInput');let timer;inp.oninput=()=>{clearTimeout(timer);timer=setTimeout(async()=>{const q=inp.value.trim(),out=document.getElementById('profileSearchResults');if(q.length<2){out.style.display='none';return}const r=await fetch('/api/profile/search?q='+encodeURIComponent(q)),a=await r.json();out.innerHTML=a.map(x=>'<div class="profile-search-result" data-u="'+esc2(x.username)+'"><div class="mini-avatar">'+(x.avatar_data?'<img src="'+x.avatar_data+'">':esc2((x.student_name||x.username)[0]))+'</div><div><b>'+esc2(x.student_name||x.username)+'</b><div class="muted">'+esc2(x.role||'STUDENT')+' · @'+esc2(x.username)+' · Roll '+esc2(x.roll_number||'—')+'</div></div></div>').join('')||'<div class="muted" style="padding:10px">No profile found.</div>';out.style.display='block';out.querySelectorAll('[data-u]').forEach(e=>e.onclick=()=>{out.style.display='none';openVisitor(e.dataset.u)});const exact=a.find(x=>String(x.username).toLowerCase()===q.toLowerCase()||String(x.roll_number||'').toLowerCase()===q.toLowerCase()||String(x.user_id||'')===q);if(exact){out.style.display='none';openVisitor(exact.username)}},250)};document.addEventListener('click',e=>{if(!box.contains(e.target)){const o=document.getElementById('profileSearchResults');if(o)o.style.display='none'}})}
 function addSocialToPost(article,p){if(!article||!p||article.dataset.upgraded)return;article.dataset.upgraded='1';const old=article.querySelector('.post-head');if(!old)return;const username=article.querySelector('.author-user');if(username){username.style.cursor='pointer';username.onclick=()=>openVisitor(p.username)}let actions=document.createElement('div');actions.className='social-tools';actions.innerHTML='<button class="social-btn heart '+(p.liked?'liked':'')+'">♥ <span>'+Number(p.like_count||0)+'</span></button><button class="social-btn comment">◯ <span>'+Number(p.comment_count||0)+'</span></button><button class="social-btn share">➤ <span>'+Number(p.share_count||0)+'</span></button>';article.appendChild(actions);actions.querySelector('.heart').onclick=async()=>{const r=await fetch('/api/posts/'+p.id+'/like',{method:'POST'}),d=await r.json();if(r.ok){actions.querySelector('.heart').classList.toggle('liked',d.liked);actions.querySelector('.heart span').textContent=d.count}};actions.querySelector('.share').onclick=async()=>{const r=await fetch('/api/posts/'+p.id+'/share',{method:'POST'}),d=await r.json();if(r.ok){try{await navigator.clipboard.writeText(d.url);alert('Share link copied')}catch{alert(d.url)}actions.querySelector('.share span').textContent=d.count}};actions.querySelector('.comment').onclick=()=>loadUpgradeComments(article,p.id);
 const own=me&&Number(p.user_id)===Number(me.user.id),menu=document.createElement('div');menu.className='post-menu';menu.innerHTML='<button class="alt" style="padding:5px 9px">⋯</button><div class="post-menu-panel">'+(own?'<button data-edit>✎ Edit</button><button data-delete>⌫ Delete</button>':'')+'<button data-details>ⓘ Details</button></div>';old.appendChild(menu);menu.querySelector('button').onclick=()=>menu.querySelector('.post-menu-panel').classList.toggle('show');if(own){menu.querySelector('[data-edit]').onclick=()=>{const b=prompt('Edit post',p.body||'');if(b!==null)fetch('/api/posts/'+p.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({body:b})}).then(()=>loadPosts())};menu.querySelector('[data-delete]').onclick=()=>{if(confirm('Delete this post?'))fetch('/api/posts/'+p.id,{method:'DELETE'}).then(()=>loadPosts())}}menu.querySelector('[data-details]').onclick=()=>alert('Uploaded by @'+p.username+'\\nCreated: '+new Date(p.created_at).toLocaleString()+'\\nUpdated: '+new Date(p.updated_at).toLocaleString())}
 async function loadUpgradeComments(article,id){let box=article.querySelector('.upgrade-comments');if(!box){box=document.createElement('div');box.className='upgrade-comments';article.appendChild(box)}const r=await fetch('/api/posts/'+id+'/comments'),a=await r.json();box.innerHTML='<div style="margin-top:8px">'+(a.length?a.map(c=>'<div class="comment-row"><div class="comment-text"><small>@'+esc2(c.username)+' · '+new Date(c.created_at).toLocaleString()+'</small><div>'+esc2(c.body)+'</div></div>'+(Number(c.user_id)===Number(me.user.id)?'<button class="alt" style="padding:5px" data-c="'+c.id+'">⌫</button>':'')+'</div>').join(''):'<div class="muted">No comments yet.</div>')+'</div><div style="display:flex;gap:7px;margin-top:8px"><input class="upgrade-comment-input" placeholder="Write a comment"><button class="social-btn">Send</button></div>';box.querySelector('button:last-child').onclick=async()=>{const i=box.querySelector('input');if(!i.value.trim())return;await fetch('/api/posts/'+id+'/comments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({body:i.value.trim()})});loadUpgradeComments(article,id)};box.querySelectorAll('[data-c]').forEach(b=>b.onclick=async()=>{if(confirm('Delete comment?')){await fetch('/api/comments/'+b.dataset.c,{method:'DELETE'});loadUpgradeComments(article,id)}})}
 window.renderProfileExtras=async function(){if(!me?.profile)return;document.getElementById('profileRole')?.classList.toggle('profile-role-admin',!!me.admin);const sec=document.querySelector('#profilePage .profile-content');if(!sec||sec.querySelector('.privacy-enhanced'))return;const wrap=document.createElement('div');wrap.className='privacy-enhanced';wrap.innerHTML='<div class="profile-posts-title">Privacy controls</div><div class="privacy">Your private fields are enforced server-side; visitors can never edit your profile.</div>';sec.appendChild(wrap)};
 const oldLoadPosts=window.loadPosts;window.loadPosts=async function(){await oldLoadPosts();const r=await fetch('/api/posts');if(!r.ok)return;const posts=await r.json();document.querySelectorAll('.post').forEach((el,i)=>addSocialToPost(el,posts[i]))};
-window.addEventListener('load',()=>{injectSearch();setTimeout(()=>{if(me)renderProfileExtras();loadPosts()},900)});
+window.addEventListener('load',()=>{setTimeout(()=>{if(me)renderProfileExtras();loadPosts()},900)});
 })();
-/* Final navigation/search UX */
+/* Redesigned glass search experience */
 (()=>{
-const st=document.createElement('style');
-st.textContent='html,body,#site,.nav,.nav *{-webkit-tap-highlight-color:transparent}.nav{--nav-index:0;isolation:isolate;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.nav::before{content:"";position:absolute;z-index:0;left:7px;top:7px;width:52px;height:52px;border-radius:999px;background:linear-gradient(145deg,#242831,#11141a);box-shadow:inset 0 1px 0 #ffffff18,0 8px 22px #0007;transform:translateX(calc(var(--nav-index)*57px));transition:transform .42s cubic-bezier(.22,1,.36,1);pointer-events:none}.nav button,.nav button:hover,.nav button:active,.nav button:focus,.nav button:focus-visible{outline:0!important;box-shadow:none!important;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}.nav button{background:transparent!important}.nav button::after,.nav button.active::after{background:transparent!important;box-shadow:none!important}.nav button:active{transform:scale(.92)!important}.nav-search-page{padding:24px 18px 120px;min-height:calc(100vh - 72px);position:relative;overflow:hidden}.nav-search-page:before{content:'';position:absolute;inset:-20px;background:var(--campus-bg) center/cover no-repeat;filter:blur(16px) brightness(.5) saturate(1.08);transform:scale(1.06);opacity:.8}.nav-search-page:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#05070a44,#05070ae5)}.nav-search-card{position:relative;z-index:1}.nav-search-card{width:min(760px,100%);margin:auto;padding:18px;border-radius:24px}.nav-search-title{font-size:12px;letter-spacing:3px;color:#ff6670;font-weight:900;text-transform:uppercase;margin-bottom:12px}.nav-search-input{width:100%;box-sizing:border-box;padding:16px 18px;border-radius:17px;background:#ffffff08;color:#fff;border:1px solid #ffffff18;font-size:16px;outline:0}.nav-search-input:focus{border-color:#ed1c2460;box-shadow:0 0 0 4px #ed1c2412}.nav-search-results{margin-top:10px;display:grid;gap:7px}.nav-search-result{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;border:1px solid #ffffff10;background:#ffffff05;cursor:pointer;transition:transform .25s ease,background .25s ease}.nav-search-result:hover{transform:translateX(4px);background:#ffffff0a}.nav-search-empty{padding:16px;text-align:center;color:#8f949e}.page.nav-in-left{animation:navInLeft .42s cubic-bezier(.22,1,.36,1) both!important}.page.nav-in-right{animation:navInRight .42s cubic-bezier(.22,1,.36,1) both!important}@keyframes navInLeft{from{opacity:0;transform:translate3d(34px,0,0)}to{opacity:1;transform:none}}@keyframes navInRight{from{opacity:0;transform:translate3d(-34px,0,0)}to{opacity:1;transform:none}}@media(max-width:700px){.nav::before{width:50px;height:50px;transform:translateX(calc(var(--nav-index)*56px))}.nav button{width:50px;height:50px}.nav::before{width:50px;height:50px}.nav-search-page{padding:18px 14px 115px}.nav-search-card{padding:15px}.nav-search-page:before{filter:blur(13px) brightness(.5) saturate(1.08)}}';
-document.head.appendChild(st);
-function makeSearch(){if(document.getElementById('searchPage'))return;const m=document.createElement('main');m.id='searchPage';m.className='page';m.innerHTML='<div class="nav-search-page"><section class="nav-search-card glass"><div class="nav-search-title">Find a DMRC student</div><input id="navSearchInput" class="nav-search-input" autocomplete="off" placeholder="Search username, name or roll number"><div id="navSearchResults" class="nav-search-results"><div class="nav-search-empty">Type at least 2 characters to search.</div></div></section></div>';document.getElementById('profilePage')?.before(m)}
-function searchBind(){makeSearch();const i=document.getElementById('navSearchInput'),o=document.getElementById('navSearchResults');if(!i||i.dataset.bound)return;i.dataset.bound='1';let t;i.oninput=()=>{clearTimeout(t);const q=i.value.trim();if(q.length<2){o.innerHTML='<div class="nav-search-empty">Type at least 2 characters to search.</div>';return}t=setTimeout(async()=>{try{const r=await fetch('/api/profile/search?q='+encodeURIComponent(q),{cache:'no-store'}),a=await r.json();o.innerHTML=a.length?a.map(x=>'<div class="nav-search-result" data-u="'+esc2(x.username)+'"><div class="mini-avatar">'+(x.avatar_data?'<img src="'+esc2(x.avatar_data)+'">':esc2((x.student_name||x.username)[0]))+'</div><div><b>'+esc2(x.student_name||x.username)+'</b><div class="muted">'+esc2(x.role||'STUDENT')+' · @'+esc2(x.username)+' · Roll '+esc2(x.roll_number||'—')+'</div></div></div>').join(''):'<div class="nav-search-empty">No profile found.</div>';o.querySelectorAll('[data-u]').forEach(x=>x.onclick=()=>openVisitor(x.dataset.u));const exact=a.find(x=>String(x.username).toLowerCase()===q.toLowerCase()||String(x.roll_number||'').toLowerCase()===q.toLowerCase()||String(x.user_id||'')===q);if(exact)openVisitor(exact.username)}catch{o.innerHTML='<div class="nav-search-empty">Search failed. Please try again.</div>'}},180)}}
+const style=document.createElement('style');
+style.textContent=`
+.search-shell{min-height:calc(100vh - 88px);padding:26px 16px 125px;position:relative;overflow:hidden}
+.search-shell:before{content:"";position:absolute;inset:-35px;background:var(--campus-bg) center/cover no-repeat;filter:blur(20px) brightness(.42) saturate(1.08);transform:scale(1.08);opacity:.9}
+.search-shell:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 8%,#ed1c2420,transparent 38%),linear-gradient(180deg,#05070a55,#05070af2)}
+.search-panel{position:relative;z-index:2;width:min(760px,100%);margin:0 auto;padding:24px;border:1px solid #ffffff16;border-radius:30px;background:linear-gradient(145deg,#ffffff0d,#ffffff04);box-shadow:0 28px 80px #0008,inset 0 1px 0 #ffffff12;backdrop-filter:blur(18px) saturate(125%);-webkit-backdrop-filter:blur(18px) saturate(125%)}
+.search-brand{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+.search-brand-icon{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#ed1c24,#8d0e14);box-shadow:0 10px 28px #ed1c2438}
+.search-brand-icon svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2}
+.search-eyebrow{font-size:10px;letter-spacing:3px;color:#ff6870;font-weight:900;text-transform:uppercase}
+.search-heading{margin:3px 0 0;font-size:27px;letter-spacing:-.5px;color:#fff}
+.search-subtitle{margin:5px 0 0;color:#969ca7;font-size:12px}
+.search-input-wrap{position:relative}
+.search-input-wrap:focus-within{filter:drop-shadow(0 10px 25px #ed1c2410)}
+.search-input-icon{position:absolute;left:17px;top:50%;transform:translateY(-50%);pointer-events:none}
+.search-input-icon svg{width:20px;height:20px;fill:none;stroke:#aeb3bd;stroke-width:2}
+.search-input{width:100%;box-sizing:border-box;padding:16px 48px 16px 48px;border-radius:18px;border:1px solid #ffffff18;background:#05070ac9;color:#fff;outline:0;font-size:15px;transition:border .25s,box-shadow .25s,background .25s}
+.search-input:focus{border-color:#ed1c2466;background:#07090dcc;box-shadow:0 0 0 4px #ed1c2412,0 14px 35px #0005}
+.search-clear{position:absolute;right:9px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:50%;background:#ffffff0b;color:#b9bec7;cursor:pointer;display:none}
+.search-clear.show{display:block}
+.search-hint{display:flex;justify-content:space-between;gap:10px;margin:9px 4px 0;color:#777e89;font-size:10px}
+.search-results{margin-top:18px;display:grid;gap:8px}
+.search-status{text-align:center;padding:28px 12px;color:#8e949e;font-size:12px}
+.search-result{display:flex;align-items:center;gap:13px;padding:13px;border-radius:18px;border:1px solid #ffffff0e;background:linear-gradient(135deg,#ffffff0a,#ffffff03);cursor:pointer;transition:transform .28s cubic-bezier(.22,1,.36,1),background .28s,border .28s,box-shadow .28s}
+.search-result:hover{transform:translateY(-2px);background:#ffffff0d;border-color:#ffffff1c;box-shadow:0 14px 35px #0005}
+.search-result.exact{border-color:#ed1c2450;background:linear-gradient(135deg,#ed1c2418,#ffffff05)}
+.search-result-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:15px;overflow:hidden;display:grid;place-items:center;background:#181c23;border:1px solid #ffffff14;color:#fff;font-weight:900}
+.search-result-avatar img{width:100%;height:100%;object-fit:cover}
+.search-result-main{min-width:0;flex:1}
+.search-result-name{font-size:14px;font-weight:800;color:#f5f6f8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result-meta{margin-top:4px;color:#9298a3;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result-arrow{color:#777e89;font-size:18px;transition:transform .25s,color .25s}
+.search-result:hover .search-result-arrow{transform:translateX(3px);color:#ff5b63}
+.search-exact{font-size:8px;letter-spacing:1.5px;color:#ff6870;font-weight:900;margin-top:5px}
+.search-count{margin-top:14px;color:#6f7580;font-size:10px;text-align:center}
+@media(max-width:600px){.search-shell{padding:16px 12px 115px}.search-panel{padding:18px;border-radius:24px}.search-heading{font-size:23px}.search-result{padding:11px}.search-result-avatar{width:44px;height:44px;flex-basis:44px;border-radius:14px}}
+`;
+document.head.appendChild(style);
+
+function ensureSearchPage(){
+  if(document.getElementById('searchPage'))return;
+  const m=document.createElement('main');
+  m.id='searchPage';m.className='page';
+  m.innerHTML=`<div class="search-shell">
+    <section class="search-panel">
+      <div class="search-brand">
+        <div class="search-brand-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 5 5"></path></svg></div>
+        <div><div class="search-eyebrow">DMRC DIRECTORY</div><h1 class="search-heading">Find a Student</h1><div class="search-subtitle">Search by username, roll number, ID or name</div></div>
+      </div>
+      <div class="search-input-wrap">
+        <span class="search-input-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 5 5"></path></svg></span>
+        <input id="navSearchInput" class="search-input" autocomplete="off" spellcheck="false" placeholder="Type username, roll, ID or name…">
+        <button id="navSearchClear" class="search-clear" aria-label="Clear search">×</button>
+      </div>
+      <div class="search-hint"><span>Exact matches open instantly</span><span>Minimum 2 characters</span></div>
+      <div id="navSearchResults" class="search-results"><div class="search-status">Start typing to find a DMRC student.</div></div>
+    </section>
+  </div>`;
+  document.getElementById('profilePage')?.before(m);
+}
+
+function bindSearch(){
+  ensureSearchPage();
+  const input=document.getElementById('navSearchInput'),out=document.getElementById('navSearchResults'),clear=document.getElementById('navSearchClear');
+  if(!input||input.dataset.bound)return;
+  input.dataset.bound='1';
+  let timer=0,lastQuery='';
+  const render=(items,q)=>{
+    if(!items.length){out.innerHTML='<div class="search-status">No matching profile found.</div>';return}
+    const exact=items.find(x=>String(x.username).toLowerCase()===q.toLowerCase()||String(x.roll_number||'').toLowerCase()===q.toLowerCase()||String(x.user_id||'')===q);
+    out.innerHTML=items.map(x=>{
+      const isExact=exact&&String(x.username)===String(exact.username);
+      const initial=esc2((x.student_name||x.username||'D')[0]);
+      return '<div class="search-result '+(isExact?'exact':'')+'" data-u="'+esc2(x.username)+'">'+
+        '<div class="search-result-avatar">'+(x.avatar_data?'<img src="'+esc2(x.avatar_data)+'" alt="">':initial)+'</div>'+
+        '<div class="search-result-main"><div class="search-result-name">'+esc2(x.student_name||x.username)+'</div>'+
+        '<div class="search-result-meta">'+esc2(x.role||'STUDENT')+' · @'+esc2(x.username)+' · Roll '+esc2(x.roll_number||'—')+'</div>'+
+        (isExact?'<div class="search-exact">EXACT MATCH · OPEN PROFILE</div>':'')+
+        '</div><div class="search-result-arrow">›</div></div>';
+    }).join('');
+    out.querySelectorAll('[data-u]').forEach(el=>el.onclick=()=>openVisitor(el.dataset.u));
+    const exactItem=out.querySelector('.search-result.exact');
+    if(exactItem){clear.classList.add('show')}
+    const exactUser=items.find(x=>String(x.username).toLowerCase()===q.toLowerCase()||String(x.roll_number||'').toLowerCase()===q.toLowerCase()||String(x.user_id||'')===q);
+    if(exactUser)openVisitor(exactUser.username);
+  };
+  input.oninput=()=>{
+    clearTimeout(timer);const q=input.value.trim();clear.classList.toggle('show',!!q);
+    if(q.length<2){out.innerHTML='<div class="search-status">Start typing to find a DMRC student.</div>';return}
+    out.innerHTML='<div class="search-status">Searching…</div>';
+    timer=setTimeout(async()=>{
+      if(q===lastQuery)return;lastQuery=q;
+      try{
+        const r=await fetch('/api/profile/search?q='+encodeURIComponent(q),{cache:'no-store'}),a=await r.json();
+        render(a,q);
+      }catch{out.innerHTML='<div class="search-status">Search failed. Please try again.</div>'}
+    },180);
+  };
+  clear.onclick=()=>{input.value='';lastQuery='';clear.classList.remove('show');out.innerHTML='<div class="search-status">Start typing to find a DMRC student.</div>';input.focus()};
+}
+
 let navPage='home';
-window.showPage=function(name){searchBind();const next=document.getElementById(name+'Page');if(!next)return;if(navPage===name){window.scrollTo({top:0,behavior:'smooth'});if(name==='ai')window.aiLoad?.();return}const order={home:0,search:1,profile:2,ai:3},dir=(order[name]??0)>(order[navPage]??0)?'left':'right',prev=document.getElementById(navPage+'Page');if(prev)prev.classList.remove('active');next.classList.remove('nav-in-left','nav-in-right');void next.offsetWidth;next.classList.add('active','nav-in-'+dir);homeNav?.classList.toggle('active',name==='home');profileNav?.classList.toggle('active',name==='profile');document.getElementById('profileSearchNav')?.classList.toggle('active',name==='search');document.getElementById('aiNav')?.classList.toggle('active',name==='ai');document.querySelector('.nav')?.style.setProperty('--nav-index',String(order[name]??0));navPage=name;window.scrollTo({top:0,behavior:'smooth'});if(name==='search')setTimeout(()=>document.getElementById('navSearchInput')?.focus({preventScroll:true}),120);if(name==='profile')setTimeout(()=>window.renderProfileExtras?.(),120);if(name==='ai')setTimeout(()=>window.aiLoad?.(),120)};
-function addSearchNav(){const n=document.querySelector('.nav');if(!n)return;makeSearch();let b=document.getElementById('profileSearchNav');if(!b){b=document.createElement('button');b.id='profileSearchNav';b.className='search-nav-btn';b.title='Search students';b.setAttribute('aria-label','Search students');b.innerHTML='<svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 5 5"></path></svg>';n.insertBefore(b,profileNav)}b.onclick=()=>showPage('search');const a=document.getElementById('aiNav');if(a){a.onclick=()=>showPage('ai');a.title='Personal AI';a.setAttribute('aria-label','Personal AI')}document.getElementById('profileSearch')?.remove();n.style.setProperty('--nav-index','0')}
-window.addEventListener('load',()=>{addSearchNav();searchBind()});
+window.showPage=function(name){
+  bindSearch();
+  const next=document.getElementById(name+'Page');if(!next)return;
+  if(navPage===name){window.scrollTo({top:0,behavior:'smooth'});if(name==='ai')window.aiLoad?.();if(name==='search')document.getElementById('navSearchInput')?.focus({preventScroll:true});return}
+  const order={home:0,search:1,profile:2,ai:3};
+  const dir=(order[name]??0)>(order[navPage]??0)?'left':'right';
+  const prev=document.getElementById(navPage+'Page');
+  if(prev)prev.classList.remove('active');
+  next.classList.remove('search-in-left','search-in-right');void next.offsetWidth;
+  next.classList.add('active','search-in-'+dir);
+  document.getElementById('homeNav')?.classList.toggle('active',name==='home');
+  document.getElementById('profileSearchNav')?.classList.toggle('active',name==='search');
+  document.getElementById('profileNav')?.classList.toggle('active',name==='profile');
+  document.getElementById('aiNav')?.classList.toggle('active',name==='ai');
+  document.querySelector('.nav')?.style.setProperty('--nav-index',String(order[name]??0));
+  navPage=name;window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='search')setTimeout(()=>document.getElementById('navSearchInput')?.focus({preventScroll:true}),140);
+  if(name==='profile')setTimeout(()=>window.renderProfileExtras?.(),120);
+  if(name==='ai')setTimeout(()=>window.aiLoad?.(),120);
+};
+ensureSearchPage();
+window.addEventListener('load',bindSearch);
 })();
 /* Creator signature */
 (()=>{
