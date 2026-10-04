@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const Database = require("better-sqlite3");
 const { Pool } = require("pg");
 const bcrypt = require("bcryptjs");
@@ -89,6 +90,7 @@ async function start(){
   const writeLimiter=rateLimit({windowMs:60*1000,limit:45,standardHeaders:"draft-8",legacyHeaders:false,message:{error:"Too many actions. Please slow down."}});
   app.use("/api",rateLimit({windowMs:60*1000,limit:180,standardHeaders:"draft-8",legacyHeaders:false}));
   app.use(session({store:new SessionStore(),secret:process.env.SESSION_SECRET||"unsafe-dev-secret",resave:false,saveUninitialized:false,cookie:{httpOnly:true,sameSite:"strict",secure:process.env.NODE_ENV==="production",maxAge:86400000}}));
+  app.get("/",(req,res,next)=>{try{const file=path.join(__dirname,"public","index.html");const html=fs.readFileSync(file,"utf8").replace("</body>",'<script src="/upgrade.js"></script></body>');res.type("html").send(html)}catch(e){next(e)}});
   app.use(express.static(path.join(__dirname,"public"),{etag:true,maxAge:"1h"}));
   app.get("/healthz",(req,res)=>res.json({ok:true,database:USE_POSTGRES?"postgres":"sqlite",features:["social","privacy","admin","profile-search"]}));
 
