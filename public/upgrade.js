@@ -192,3 +192,36 @@ window.addEventListener('load',()=>{loadCreatorIntro();let n=0;const t=setInterv
 }
 @media(prefers-reduced-motion:reduce){.search-panel,.search-result{animation:none!important}}
 `;document.head.appendChild(s)})();
+
+/* 2026-10-05 smooth + clean mobile performance pass */
+(()=>{
+  const s=document.createElement('style');
+  s.textContent=`
+    .home-bg,.profile-wrap:before,.bg{animation:none!important;will-change:auto!important}
+    .home-bg{filter:saturate(1.03) contrast(1.02) brightness(.57)!important}
+    .home-bg:before,.home-bg:after{display:none!important}
+    .search-shell{background:#05070a!important;isolation:isolate}
+    .search-shell:before{display:none!important}
+    .search-shell:after{background:linear-gradient(180deg,#05070a35 0%,#03060bb5 62%,#020407ed 100%)!important;display:block!important}
+    .hero:before,.hero:after,.hero-orbit,.orbit-one,.orbit-two{animation:none!important}
+    .hero:before{display:none!important}
+    .hero:after{opacity:.42!important;filter:blur(38px)!important}
+    .nav,.search-panel,.profile-card,.form-card,.composer,.post{-webkit-backdrop-filter:blur(10px) saturate(115%)!important;backdrop-filter:blur(10px) saturate(115%)!important}
+    .nav{box-shadow:0 14px 38px #0009,0 0 0 1px #0005!important;animation:none!important}
+    .search-result,.post{animation:none!important}
+    .page.active,.page.active .glass{animation:pageIn .22s ease-out both!important}
+    .brand img,.nav button,.info,.search-result{transition:transform .18s ease,background .18s ease,border-color .18s ease,color .18s ease!important}
+    @media(max-width:700px){
+      .home-bg{inset:66px 0 0!important;background-attachment:scroll!important;filter:saturate(1.02) contrast(1.01) brightness(.58)!important}
+      .nav{-webkit-backdrop-filter:blur(8px) saturate(110%)!important;backdrop-filter:blur(8px) saturate(110%)!important}
+      .search-panel,.profile-card,.form-card,.composer,.post{-webkit-backdrop-filter:blur(6px) saturate(108%)!important;backdrop-filter:blur(6px) saturate(108%)!important}
+      .hero{box-shadow:0 18px 45px #0008,inset 0 1px 0 #ffffff10!important}
+      .hero h1{filter:none!important;animation:none!important;opacity:1!important;transform:none!important;letter-spacing:-1px!important}
+      .hero-kicker,.hero-tagline{animation:none!important;opacity:1!important;transform:none!important}
+      .hero-line{animation:none!important;transform:scaleX(1)!important}
+      .hero-orbit{display:none!important}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  `;
+  document.head.appendChild(s);
+})();
