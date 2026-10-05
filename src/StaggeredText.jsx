@@ -66,6 +66,9 @@ export default function StaggeredText({
     Tag,
     { ref, className: `dmrc-staggered-text ${className}` },
     segments.map((segment, index) => {
+      if (segment === '\\n') {
+        return <br key={`break-${index}`} />;
+      }
       const isSpace = /\\s/.test(segment);
       const safeIndex = order[index];
       return (
