@@ -2,13 +2,24 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import AeroShards from './AeroShards.jsx';
 
+const renderFallback = (el) => {
+  el.dataset.unsupported = 'true';
+  el.innerHTML = `
+    <div class="aero-fallback" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+  `;
+};
+
 const mount = () => {
   const el = document.getElementById('heroAeroShards');
   if (!el) return;
+
   if (!('gpu' in navigator)) {
-    el.dataset.unsupported = 'true';
+    renderFallback(el);
     return;
   }
+
   createRoot(el).render(
     <AeroShards
       backgroundColor="#09070A"
