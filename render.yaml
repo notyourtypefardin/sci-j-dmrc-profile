@@ -3,7 +3,7 @@ services:
     name: sci-j-dmrc-profile
     runtime: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && npm run build
     startCommand: npm start
     healthCheckPath: /healthz
     envVars:
