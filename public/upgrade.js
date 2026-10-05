@@ -14,129 +14,18 @@ window.addEventListener('load',()=>{setTimeout(()=>{if(me)renderProfileExtras();
 const style=document.createElement('style');
 style.textContent=`
 .search-shell{min-height:calc(100vh - 88px);padding:26px 16px 125px;position:relative;overflow:hidden}
-.search-shell:before{content:"";position:absolute;inset:-35px;background:var(--campus-bg) center/cover no-repeat;filter:blur(20px) brightness(.42) saturate(1.08);transform:scale(1.08);opacity:.9}
-.search-shell:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 8%,#ed1c2420,transparent 38%),linear-gradient(180deg,#05070a55,#05070af2)}
-.search-panel{position:relative;z-index:2;width:min(760px,100%);margin:0 auto;padding:24px;border:1px solid #ffffff16;border-radius:30px;background:linear-gradient(145deg,#ffffff0d,#ffffff04);box-shadow:0 28px 80px #0008,inset 0 1px 0 #ffffff12;backdrop-filter:blur(18px) saturate(125%);-webkit-backdrop-filter:blur(18px) saturate(125%)}
-.search-brand{display:flex;align-items:center;gap:13px;margin-bottom:22px}
-.search-brand-icon{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#ed1c24,#8d0e14);box-shadow:0 10px 28px #ed1c2438}
-.search-brand-icon svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2}
-.search-eyebrow{font-size:10px;letter-spacing:3px;color:#ff6870;font-weight:900;text-transform:uppercase}
-.search-heading{margin:3px 0 0;font-size:27px;letter-spacing:-.5px;color:#fff}
-.search-subtitle{margin:5px 0 0;color:#969ca7;font-size:12px}
-.search-input-wrap{position:relative}
-.search-input-wrap:focus-within{filter:drop-shadow(0 10px 25px #ed1c2410)}
-.search-input-icon{position:absolute;left:17px;top:50%;transform:translateY(-50%);pointer-events:none}
-.search-input-icon svg{width:20px;height:20px;fill:none;stroke:#aeb3bd;stroke-width:2}
-.search-input{width:100%;box-sizing:border-box;padding:16px 48px 16px 48px;border-radius:18px;border:1px solid #ffffff18;background:#05070ac9;color:#fff;outline:0;font-size:15px;transition:border .25s,box-shadow .25s,background .25s}
-.search-input:focus{border-color:#ed1c2466;background:#07090dcc;box-shadow:0 0 0 4px #ed1c2412,0 14px 35px #0005}
-.search-clear{position:absolute;right:9px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:50%;background:#ffffff0b;color:#b9bec7;cursor:pointer;display:none}
-.search-clear.show{display:block}
-.search-hint{display:flex;justify-content:space-between;gap:10px;margin:9px 4px 0;color:#777e89;font-size:10px}
-.search-results{margin-top:18px;display:grid;gap:8px}
-.search-status{text-align:center;padding:28px 12px;color:#8e949e;font-size:12px}
-.search-result{display:flex;align-items:center;gap:13px;padding:13px;border-radius:18px;border:1px solid #ffffff0e;background:linear-gradient(135deg,#ffffff0a,#ffffff03);cursor:pointer;transition:transform .28s cubic-bezier(.22,1,.36,1),background .28s,border .28s,box-shadow .28s}
-.search-result:hover{transform:translateY(-2px);background:#ffffff0d;border-color:#ffffff1c;box-shadow:0 14px 35px #0005}
-.search-result.exact{border-color:#ed1c2450;background:linear-gradient(135deg,#ed1c2418,#ffffff05)}
-.search-result-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:15px;overflow:hidden;display:grid;place-items:center;background:#181c23;border:1px solid #ffffff14;color:#fff;font-weight:900}
-.search-result-avatar img{width:100%;height:100%;object-fit:cover}
-.search-result-main{min-width:0;flex:1}
-.search-result-name{font-size:14px;font-weight:800;color:#f5f6f8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.search-result-meta{margin-top:4px;color:#9298a3;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.search-result-arrow{color:#777e89;font-size:18px;transition:transform .25s,color .25s}
-.search-result:hover .search-result-arrow{transform:translateX(3px);color:#ff5b63}
-.search-exact{font-size:8px;letter-spacing:1.5px;color:#ff6870;font-weight:900;margin-top:5px}
-.search-count{margin-top:14px;color:#6f7580;font-size:10px;text-align:center}
-@media(max-width:600px){.search-shell{padding:16px 12px 115px}.search-panel{padding:18px;border-radius:24px}.search-heading{font-size:23px}.search-result{padding:11px}.search-result-avatar{width:44px;height:44px;flex-basis:44px;border-radius:14px}}
+.search-shell:before{content:"";position:absolute;inset:-28px;background:url('/file_000000004ea4820883ccbb5d217d3d92.png?v=search-bg-20261005') center/cover no-repeat;filter:blur(16px) brightness(.42) saturate(1.08);transform:scale(1.08);opacity:.88;z-index:0}
+.search-shell:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 8%,#ed1c2420,transparent 38%),linear-gradient(180deg,#05070a55,#05070af2);z-index:1}
+.search-panel,.directory-section{position:relative;z-index:2;width:min(760px,100%);margin:0 auto;border:1px solid #ffffff16;background:linear-gradient(145deg,#ffffff0d,#ffffff04);box-shadow:0 28px 80px #0008,inset 0 1px 0 #ffffff12;backdrop-filter:blur(18px) saturate(125%);-webkit-backdrop-filter:blur(18px) saturate(125%)}
+.search-panel{padding:24px;border-radius:30px}.search-brand{display:flex;align-items:center;gap:13px;margin-bottom:22px}.search-brand-icon{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#ed1c24,#8d0e14);box-shadow:0 10px 28px #ed1c2438}.search-brand-icon svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2}.search-eyebrow,.directory-kicker{font-size:10px;letter-spacing:3px;color:#ff6870;font-weight:900;text-transform:uppercase}.search-heading{margin:3px 0 0;font-size:27px;letter-spacing:-.5px}.search-subtitle{margin:5px 0 0;color:#969ca7;font-size:12px}.search-input-wrap{position:relative}.search-input-icon{position:absolute;left:17px;top:50%;transform:translateY(-50%);pointer-events:none}.search-input-icon svg{width:20px;height:20px;fill:none;stroke:#aeb3bd;stroke-width:2}.search-input{width:100%;padding:16px 48px;border-radius:18px;border:1px solid #ffffff18;background:#05070ac9;color:#fff;outline:0;font-size:15px}.search-input:focus{border-color:#ed1c2466;background:#07090dcc;box-shadow:0 0 0 4px #ed1c2412,0 14px 35px #0005}.search-clear{position:absolute;right:9px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:50%;background:#ffffff0b;color:#b9bec7;display:none}.search-clear.show{display:block}.search-hint{display:flex;justify-content:space-between;gap:10px;margin:9px 4px 0;color:#777e89;font-size:10px}.search-results{margin-top:18px;display:grid;gap:8px}.search-status{text-align:center;padding:28px 12px;color:#8e949e;font-size:12px}.search-result{display:flex;align-items:center;gap:13px;padding:13px;border-radius:18px;border:1px solid #ffffff0e;background:#ffffff08;cursor:pointer;transition:.22s ease}.search-result:hover{transform:translateY(-2px);background:#ffffff0d;border-color:#ffffff1c;box-shadow:0 14px 35px #0005}.search-result.exact{border-color:#ed1c2450;background:#ed1c2418}.search-result-avatar,.directory-avatar{width:48px;height:48px;flex:0 0 48px;border-radius:15px;overflow:hidden;display:grid;place-items:center;background:#181c23;border:1px solid #ffffff14;font-weight:900}.search-result-avatar img,.directory-avatar img{width:100%;height:100%;object-fit:cover}.search-result-main,.directory-main{min-width:0;flex:1}.search-result-name,.directory-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.search-result-meta,.directory-meta{margin-top:4px;color:#9298a3;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.search-result-arrow,.directory-open{color:#777e89;font-size:18px}.search-exact{font-size:8px;letter-spacing:1.5px;color:#ff6870;font-weight:900;margin-top:5px}.search-count{color:#6f7580;font-size:10px;text-align:right}.directory-section{margin-top:18px;padding:20px;border-radius:26px}.directory-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}.directory-title{margin:3px 0 0;font-size:20px;font-weight:900}.directory-sub{margin-top:4px;color:#777e89;font-size:10px}.directory-list{display:grid;gap:7px;max-height:58vh;overflow:auto}.directory-item{display:flex;align-items:center;gap:11px;padding:10px;border:1px solid #ffffff0c;border-radius:16px;background:#ffffff06;transition:.22s ease}.directory-item.clickable{cursor:pointer}.directory-item.clickable:hover{transform:translateY(-2px);background:#ffffff0b;border-color:#ffffff1c}.directory-rank{width:28px;flex:0 0 28px;text-align:center;color:#777e89;font-size:10px;font-weight:900}.directory-avatar{width:44px;height:44px;flex-basis:44px;border-radius:13px}.directory-name{font-size:13px}.directory-username{margin-top:3px;color:#ff6870;font-size:10px;font-weight:800}.directory-status{font-size:9px;color:#777e89}.directory-empty{padding:24px;text-align:center;color:#8e949e;font-size:12px}
+@media(max-width:600px){.search-shell{padding:16px 12px 115px}.search-shell:before{filter:blur(10px) brightness(.42) saturate(1.05);opacity:.72}.search-panel,.directory-section{backdrop-filter:blur(10px) saturate(115%);-webkit-backdrop-filter:blur(10px) saturate(115%)}.search-panel{padding:18px;border-radius:24px}.search-heading{font-size:23px}.search-result{padding:11px}.search-result-avatar{width:44px;height:44px;flex-basis:44px;border-radius:14px}.directory-section{padding:16px;border-radius:22px}.directory-title{font-size:18px}.directory-list{max-height:55vh}}
 `;
 document.head.appendChild(style);
-
-function ensureSearchPage(){
-  if(document.getElementById('searchPage'))return;
-  const m=document.createElement('main');
-  m.id='searchPage';m.className='page';
-  m.innerHTML=`<div class="search-shell">
-    <section class="search-panel">
-      <div class="search-brand">
-        <div class="search-brand-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 5 5"></path></svg></div>
-        <div><div class="search-eyebrow">DMRC DIRECTORY</div><h1 class="search-heading">Find a Student</h1><div class="search-subtitle">Search by username, roll number, ID or name</div></div>
-      </div>
-      <div class="search-input-wrap">
-        <span class="search-input-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 5 5"></path></svg></span>
-        <input id="navSearchInput" class="search-input" autocomplete="off" spellcheck="false" placeholder="Type username, roll, ID or name…">
-        <button id="navSearchClear" class="search-clear" aria-label="Clear search">×</button>
-      </div>
-      <div class="search-hint"><span>Exact matches open instantly</span><span>Minimum 2 characters</span></div>
-      <div id="navSearchResults" class="search-results"><div class="search-status">Start typing to find a DMRC student.</div></div>
-    </section>
-  </div>`;
-  document.getElementById('profilePage')?.before(m);
-}
-
-function bindSearch(){
-  ensureSearchPage();
-  const input=document.getElementById('navSearchInput'),out=document.getElementById('navSearchResults'),clear=document.getElementById('navSearchClear');
-  if(!input||input.dataset.bound)return;
-  input.dataset.bound='1';
-  let timer=0,lastQuery='';
-  const render=(items,q)=>{
-    if(!items.length){out.innerHTML='<div class="search-status">No matching profile found.</div>';return}
-    const exact=items.find(x=>String(x.username).toLowerCase()===q.toLowerCase()||String(x.roll_number||'').toLowerCase()===q.toLowerCase()||String(x.user_id||'')===q);
-    out.innerHTML=items.map(x=>{
-      const isExact=exact&&String(x.username)===String(exact.username);
-      const initial=esc2((x.student_name||x.username||'D')[0]);
-      return '<div class="search-result '+(isExact?'exact':'')+'" data-u="'+esc2(x.username)+'">'+
-        '<div class="search-result-avatar">'+(x.avatar_data?'<img src="'+esc2(x.avatar_data)+'" alt="">':initial)+'</div>'+
-        '<div class="search-result-main"><div class="search-result-name">'+esc2(x.student_name||x.username)+'</div>'+
-        '<div class="search-result-meta">'+esc2(x.role||'STUDENT')+' · @'+esc2(x.username)+' · Roll '+esc2(x.roll_number||'—')+'</div>'+
-        (isExact?'<div class="search-exact">EXACT MATCH · OPEN PROFILE</div>':'')+
-        '</div><div class="search-result-arrow">›</div></div>';
-    }).join('');
-    out.querySelectorAll('[data-u]').forEach(el=>el.onclick=()=>openVisitor(el.dataset.u));
-    const exactItem=out.querySelector('.search-result.exact');
-    if(exactItem){clear.classList.add('show')}
-    const exactUser=items.find(x=>String(x.username).toLowerCase()===q.toLowerCase()||String(x.roll_number||'').toLowerCase()===q.toLowerCase()||String(x.user_id||'')===q);
-    if(exactUser)openVisitor(exactUser.username);
-  };
-  input.oninput=()=>{
-    clearTimeout(timer);const q=input.value.trim();clear.classList.toggle('show',!!q);
-    if(q.length<2){out.innerHTML='<div class="search-status">Start typing to find a DMRC student.</div>';return}
-    out.innerHTML='<div class="search-status">Searching…</div>';
-    timer=setTimeout(async()=>{
-      if(q===lastQuery)return;lastQuery=q;
-      try{
-        const r=await fetch('/api/profile/search?q='+encodeURIComponent(q),{cache:'no-store'}),a=await r.json();
-        render(a,q);
-      }catch{out.innerHTML='<div class="search-status">Search failed. Please try again.</div>'}
-    },180);
-  };
-  clear.onclick=()=>{input.value='';lastQuery='';clear.classList.remove('show');out.innerHTML='<div class="search-status">Start typing to find a DMRC student.</div>';input.focus()};
-}
-
-let navPage='home';
-window.showPage=function(name){
-  bindSearch();
-  const next=document.getElementById(name+'Page');if(!next)return;
-  if(navPage===name){window.scrollTo({top:0,behavior:'smooth'});if(name==='ai')window.aiLoad?.();if(name==='search')document.getElementById('navSearchInput')?.focus({preventScroll:true});return}
-  const order={home:0,search:1,profile:2,ai:3};
-  const dir=(order[name]??0)>(order[navPage]??0)?'left':'right';
-  const prev=document.getElementById(navPage+'Page');
-  if(prev)prev.classList.remove('active');
-  next.classList.remove('search-in-left','search-in-right');void next.offsetWidth;
-  next.classList.add('active','search-in-'+dir);
-  document.getElementById('homeNav')?.classList.toggle('active',name==='home');
-  document.getElementById('profileSearchNav')?.classList.toggle('active',name==='search');
-  document.getElementById('profileNav')?.classList.toggle('active',name==='profile');
-  document.getElementById('aiNav')?.classList.toggle('active',name==='ai');
-  document.querySelector('.nav')?.style.setProperty('--nav-index',String(order[name]??0));
-  navPage=name;window.scrollTo({top:0,behavior:'smooth'});
-  if(name==='search')setTimeout(()=>document.getElementById('navSearchInput')?.focus({preventScroll:true}),140);
-  if(name==='profile')setTimeout(()=>window.renderProfileExtras?.(),120);
-  if(name==='ai')setTimeout(()=>window.aiLoad?.(),120);
-};
-ensureSearchPage();
-window.addEventListener('load',bindSearch);
-})();
-/* Admin-only Creator Introduction manager */
+function ensureSearchPage(){if(document.getElementById('searchPage'))return;const m=document.createElement('main');m.id='searchPage';m.className='page';m.innerHTML=`<div class="search-shell"><section class="search-panel"><div class="search-brand"><div class="search-brand-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 5 5"></path></svg></div><div><div class="search-eyebrow">DMRC DIRECTORY</div><h1 class="search-heading">Find a Student</h1><div class="search-subtitle">Search by username, roll number, ID or name</div></div></div><div class="search-input-wrap"><span class="search-input-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 5 5"></path></svg></span><input id="navSearchInput" class="search-input" autocomplete="off" spellcheck="false" placeholder="Type username, roll, ID or name…"><button id="navSearchClear" class="search-clear" aria-label="Clear search">×</button></div><div class="search-hint"><span>Exact matches open instantly</span><span>Directory below always available</span></div><div id="navSearchResults" class="search-results"><div class="search-status">Start typing to find a DMRC student.</div></div></section><section class="directory-section"><div class="directory-head"><div><div class="directory-kicker">DMRC STUDENT DIRECTORY</div><div class="directory-title">All Students</div><div class="directory-sub">Serial follows account creation order — search is optional.</div></div><div id="directoryCount" class="search-count">Loading…</div></div><div id="directoryList" class="directory-list"><div class="directory-empty">Loading student directory…</div></div></section></div>`;document.getElementById('profilePage')?.before(m)}
+async function loadDirectory(){const out=document.getElementById('directoryList'),count=document.getElementById('directoryCount');if(!out||out.dataset.loading==='1')return;out.dataset.loading='1';try{const r=await fetch('/api/profile/directory',{cache:'no-store'}),a=await r.json();if(!r.ok)throw new Error(a.error||'Could not load directory');count.textContent=a.length+' student'+(a.length===1?'':'s');if(!a.length){out.innerHTML='<div class="directory-empty">No students have registered yet.</div>';return}out.innerHTML=a.map(x=>{const name=x.student_name||'Profile not completed';const initial=esc2((name!=='Profile not completed'?name:x.username||'D')[0]);const clickable=!!x.student_name;return '<div class="directory-item '+(clickable?'clickable':'')+'" '+(clickable?'data-u="'+esc2(x.username)+'"':'')+'><div class="directory-rank">#'+String(x.serial_number).padStart(2,'0')+'</div><div class="directory-avatar">'+(x.avatar_data?'<img src="'+esc2(x.avatar_data)+'" alt="">':initial)+'</div><div class="directory-main"><div class="directory-name">'+esc2(name)+'</div><div class="directory-username">@'+esc2(x.username)+'</div><div class="directory-meta">'+(x.roll_number?'Roll '+esc2(x.roll_number)+' · ':'')+esc2(x.class_name||'Student')+' · '+esc2(x.role||'STUDENT')+'</div></div>'+(clickable?'<div class="directory-open">›</div>':'<div class="directory-status">Incomplete</div>')+'</div>'}).join('');out.querySelectorAll('[data-u]').forEach(el=>el.onclick=()=>openVisitor(el.dataset.u))}catch(e){out.innerHTML='<div class="directory-empty">Directory could not be loaded right now. Please try again.</div>';count.textContent=''}finally{out.dataset.loading='0'}}
+function bindSearch(){ensureSearchPage();const input=document.getElementById('navSearchInput'),out=document.getElementById('navSearchResults'),clear=document.getElementById('navSearchClear');if(!input||input.dataset.bound)return;input.dataset.bound='1';let timer=0,lastQuery='';const render=(items,q)=>{if(!items.length){out.innerHTML='<div class="search-status">No matching profile found. You can use the directory below.</div>';return}const exact=items.find(x=>String(x.username).toLowerCase()===q.toLowerCase()||String(x.roll_number||'').toLowerCase()===q.toLowerCase()||String(x.user_id||'')===q);out.innerHTML=items.map(x=>{const isExact=exact&&String(x.username)===String(exact.username);const initial=esc2((x.student_name||x.username||'D')[0]);return '<div class="search-result '+(isExact?'exact':'')+'" data-u="'+esc2(x.username)+'"><div class="search-result-avatar">'+(x.avatar_data?'<img src="'+esc2(x.avatar_data)+'" alt="">':initial)+'</div><div class="search-result-main"><div class="search-result-name">'+esc2(x.student_name||x.username)+'</div><div class="search-result-meta">'+esc2(x.role||'STUDENT')+' · @'+esc2(x.username)+' · Roll '+esc2(x.roll_number||'—')+'</div>'+(isExact?'<div class="search-exact">EXACT MATCH · OPEN PROFILE</div>':'')+'</div><div class="search-result-arrow">›</div></div>'}).join('');out.querySelectorAll('[data-u]').forEach(el=>el.onclick=()=>openVisitor(el.dataset.u));const exactUser=items.find(x=>String(x.username).toLowerCase()===q.toLowerCase()||String(x.roll_number||'').toLowerCase()===q.toLowerCase()||String(x.user_id||'')===q);if(exactUser)openVisitor(exactUser.username)};input.oninput=()=>{clearTimeout(timer);const q=input.value.trim();clear.classList.toggle('show',!!q);if(q.length<2){out.innerHTML='<div class="search-status">Start typing to find a DMRC student.</div>';return}out.innerHTML='<div class="search-status">Searching…</div>';timer=setTimeout(async()=>{if(q===lastQuery)return;lastQuery=q;try{const r=await fetch('/api/profile/search?q='+encodeURIComponent(q),{cache:'no-store'}),a=await r.json();render(a,q)}catch{out.innerHTML='<div class="search-status">Search failed. Please try again. Use the directory below if needed.</div>'}},180)};clear.onclick=()=>{input.value='';lastQuery='';clear.classList.remove('show');out.innerHTML='<div class="search-status">Start typing to find a DMRC student.</div>';input.focus()};loadDirectory()}
+let navPage='home';window.showPage=function(name){bindSearch();const next=document.getElementById(name+'Page');if(!next)return;if(navPage===name){window.scrollTo({top:0,behavior:'smooth'});if(name==='ai')window.aiLoad?.();if(name==='search'){loadDirectory();document.getElementById('navSearchInput')?.focus({preventScroll:true)}return}const order={home:0,search:1,profile:2,ai:3};const dir=(order[name]??0)>(order[navPage]??0)?'left':'right';const prev=document.getElementById(navPage+'Page');if(prev)prev.classList.remove('active');next.classList.remove('search-in-left','search-in-right');void next.offsetWidth;next.classList.add('active','search-in-'+dir);document.getElementById('homeNav')?.classList.toggle('active',name==='home');document.getElementById('profileSearchNav')?.classList.toggle('active',name==='search');document.getElementById('profileNav')?.classList.toggle('active',name==='profile');document.getElementById('aiNav')?.classList.toggle('active',name==='ai');document.querySelector('.nav')?.style.setProperty('--nav-index',String(order[name]??0));navPage=name;window.scrollTo({top:0,behavior:'smooth'});if(name==='search'){loadDirectory();setTimeout(()=>document.getElementById('navSearchInput')?.focus({preventScroll:true}),140)}if(name==='profile')setTimeout(()=>window.renderProfileExtras?.(),120);if(name==='ai')setTimeout(()=>window.aiLoad?.(),120)};ensureSearchPage();window.addEventListener('load',bindSearch);
+})();/* Admin-only Creator Introduction manager */
 (()=>{const $=id=>document.getElementById(id);let creatorImageData=null;let crop={x:50,y:50,zoom:1};
 function applyCrop(img,c){if(!img)return;const x=Number(c?.x??50),y=Number(c?.y??50),z=Number(c?.zoom??1);img.style.objectFit='cover';img.style.width=(z*100)+'%';img.style.height=(z*100)+'%';img.style.maxWidth='none';img.style.maxHeight='none';img.style.transform='translate('+((50-x)*0.35)+'%,'+((50-y)*0.35)+'%)'}
 async function loadCreatorIntro(){try{const r=await fetch('/api/creator-intro',{cache:'no-store'});if(!r.ok)return;const x=await r.json();$('creatorText').textContent=x.creator_text||'';try{crop=typeof x.creator_crop==='string'?JSON.parse(x.creator_crop):(x.creator_crop||crop)}catch{}const img=$('creatorAvatarImg'),wrap=$('creatorAvatar');if(x.creator_image_data){img.src=x.creator_image_data;img.style.display='block';wrap?.classList.add('has');applyCrop(img,crop)}else{img.removeAttribute('src');img.style.display='none';wrap?.classList.remove('has')}if(me?.admin){$('creatorEditBtn')?.style.setProperty('display','inline-flex');$('creatorImageEditBtn')?.style.setProperty('display','block')}}catch{}}
