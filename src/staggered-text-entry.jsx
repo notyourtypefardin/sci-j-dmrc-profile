@@ -10,12 +10,12 @@ const mount = () => {
     <StaggeredText
       text="Welcome to DMRC"
       as="h1"
-      segmentBy="words"
+      segmentBy="chars"
       staggerDirection="forward"
       direction="top"
       easing="anticipate"
-      duration={0.7}
-      delay={90}
+      duration={0.55}
+      delay={35}
       blur={true}
       threshold={0}
       rootMargin="0px"
