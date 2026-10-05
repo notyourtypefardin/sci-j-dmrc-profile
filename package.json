@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "build:aero": "esbuild src/aero-shards-entry.jsx --bundle --format=iife --outfile=public/aero-shards.bundle.js --minify",
-    "build": "npm run build:aero"
+    "build:staggered": "esbuild src/staggered-text-entry.jsx --bundle --format=iife --outfile=public/staggered-text.bundle.js --minify",
+    "build": "npm run build:staggered"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
