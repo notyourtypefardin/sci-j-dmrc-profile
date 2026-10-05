@@ -57,9 +57,10 @@ export default function StaggeredText({
     ? [...segments].reverse()
     : segments;
 
-  const distance = direction === 'bottom' ? '0 0 24px' :
-    direction === 'left' ? '24px 0 0' :
-    direction === 'right' ? '-24px 0 0' : '0 0 -24px';
+  const distance = direction === 'bottom' ? { x: '0px', y: '24px' } :
+    direction === 'left' ? { x: '24px', y: '0px' } :
+    direction === 'right' ? { x: '-24px', y: '0px' } :
+    { x: '0px', y: '-24px' };
 
   return React.createElement(
     Tag,
@@ -75,11 +76,12 @@ export default function StaggeredText({
           style={{
             '--stagger-delay': `${safeIndex * delay}ms`,
             '--stagger-duration': `${duration}s`,
-            '--stagger-distance': distance,
+            '--stagger-x': distance.x,
+            '--stagger-y': distance.y,
             '--stagger-ease': EASINGS[easing] || easing || EASINGS.anticipate,
             '--stagger-blur': blur ? '10px' : '0px',
             opacity: visible || isSpace ? 1 : 0,
-            transform: visible || isSpace ? 'translate3d(0,0,0)' : `translate3d(var(--stagger-distance))`,
+            transform: visible || isSpace ? 'translate3d(0,0,0)' : 'translate3d(var(--stagger-x),var(--stagger-y),0)',
             filter: visible || isSpace ? 'blur(0)' : 'blur(var(--stagger-blur))',
             transition: visible
               ? `opacity var(--stagger-duration) var(--stagger-ease) var(--stagger-delay), transform var(--stagger-duration) var(--stagger-ease) var(--stagger-delay), filter var(--stagger-duration) var(--stagger-ease) var(--stagger-delay)`
