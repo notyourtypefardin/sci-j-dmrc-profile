@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="ui-version" content="2026.10.05-dmrc-login-fix-v2"><link rel="preload" as="image" href="/file_000000004ea4820883ccbb5d217d3d92.png" fetchpriority="high"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>DMRC • SCI J</title>
+<meta name="ui-version" content="2026.10.05-dmrc-aero-fix-v1"><link rel="preload" as="image" href="/file_000000004ea4820883ccbb5d217d3d92.png" fetchpriority="high"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>DMRC • SCI J</title>
 <style>
 *{box-sizing:border-box} :root{--red:#ed1c24;--red2:#ff3640;--ink:#090a0d;--panel:#101216e8;--line:#ffffff16;--muted:#a9adb7;--ease:cubic-bezier(.22,.8,.2,1);--campus-bg:url('/file_000000004ea4820883ccbb5d217d3d92.png')}
 html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:#07080a;color:#fff;min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body::selection{background:#ed1c2455;color:#fff}
@@ -25,11 +25,26 @@ label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,texta
 .hero-aero-shards{position:absolute;inset:0;z-index:0;pointer-events:auto;border-radius:inherit;overflow:hidden;background:linear-gradient(145deg,#09070a,#12080c)}
 .hero-aero-shards::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#05050728 0%,#05050710 42%,#05050758 100%),radial-gradient(circle at 50% 50%,#ed1c2410,transparent 68%)}
 .hero-aero-shards[data-unsupported="true"]{background:radial-gradient(circle at 50% 45%,#7f18202e,transparent 58%),linear-gradient(145deg,#09070a,#12080c)}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback{position:absolute;inset:0;overflow:hidden;opacity:.95}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i{position:absolute;display:block;width:18px;height:86px;border-radius:4px;background:linear-gradient(180deg,#ff3640cc,#7f1820aa 48%,#22090d33);box-shadow:0 0 22px #ed1c2450;transform:rotate(35deg);filter:blur(.2px);animation:aeroShardFlow 6s linear infinite}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(1){left:3%;top:58%;animation-delay:-1s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(2){left:12%;top:8%;height:64px;animation-delay:-4s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(3){left:22%;top:42%;height:112px;animation-delay:-2.2s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(4){left:31%;top:15%;height:72px;animation-delay:-5s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(5){left:40%;top:62%;height:96px;animation-delay:-3.4s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(6){left:49%;top:24%;height:70px;animation-delay:-.5s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(7){left:58%;top:54%;height:118px;animation-delay:-2.8s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(8){left:67%;top:5%;height:66px;animation-delay:-4.3s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(9){left:76%;top:38%;height:92px;animation-delay:-1.7s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(10){left:85%;top:16%;height:74px;animation-delay:-3.9s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(11){left:92%;top:60%;height:104px;animation-delay:-2.5s}
+.hero-aero-shards[data-unsupported="true"] .aero-fallback i:nth-child(12){left:45%;top:72%;height:58px;animation-delay:-5.5s}
+@keyframes aeroShardFlow{0%{opacity:.18;transform:translate3d(-45px,55px,0) rotate(35deg) scale(.78)}35%{opacity:.82}70%{opacity:.5}100%{opacity:.08;transform:translate3d(55px,-70px,0) rotate(35deg) scale(1.12)}}
 .hero-content{position:relative;z-index:2}
 .hero .hero-kicker,.hero h1,.hero .hero-line,.hero .hero-profile{position:relative;z-index:2}
 .hero h1 .red-d,.hero h1 b{color:#ff3640;text-shadow:0 0 30px #ed1c2466}
 @media(max-width:700px){.hero-aero-shards{inset:0}.hero{min-height:220px}}
-</style><link rel="stylesheet" href="/aero-shards.bundle.css?v=20261005-red-aero"><script defer src="/aero-shards.bundle.js?v=20261005-red-aero"></script></head>
+</style><link rel="stylesheet" href="/aero-shards.bundle.css?v=20261005-red-aero-fix1"><script defer src="/aero-shards.bundle.js?v=20261005-red-aero-fix1"></script></head>
 <body class="auth-mode">
 <section id="auth" class="auth"><div class="bg" id="authBg"></div><div class="auth-card glass">
 <div class="logo-word"><strong>DMRC</strong><small>STUDENT COMMUNITY</small><div class="redline"></div></div>
