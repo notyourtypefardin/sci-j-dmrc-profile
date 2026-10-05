@@ -1,0 +1,15 @@
+.dmrc-staggered-text{
+  display:block;
+  margin:0;
+  white-space:normal;
+}
+.dmrc-stagger-segment{
+  display:inline-block;
+  will-change:transform,opacity,filter;
+}
+.dmrc-stagger-space{
+  white-space:pre;
+}
+@media(prefers-reduced-motion:reduce){
+  .dmrc-stagger-segment{transition:none!important;transform:none!important;filter:none!important;opacity:1!important}
+}
