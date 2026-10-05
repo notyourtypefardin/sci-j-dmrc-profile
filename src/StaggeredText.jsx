@@ -69,7 +69,7 @@ export default function StaggeredText({
       if (segment === '\\n') {
         return <br key={`break-${index}`} />;
       }
-      const isSpace = /\\s/.test(segment);
+      const isSpace = /^\s+$/.test(segment);
       const safeIndex = order[index];
       return (
         <span
@@ -93,7 +93,7 @@ export default function StaggeredText({
               : 'none'
           }}
         >
-          {segment === ' ' ? '\u00a0' : segment}
+          {isSpace ? '\u00a0' : segment}
         </span>
       );
     })
