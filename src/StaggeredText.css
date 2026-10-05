@@ -2,14 +2,23 @@
   display:block;
   margin:0;
   white-space:normal;
+  overflow:visible;
 }
-.dmrc-stagger-segment{
+.dmrc-stagger-segment,
+.dmrc-stagger-space{
   display:inline-block;
   will-change:transform,opacity,filter;
 }
 .dmrc-stagger-space{
   white-space:pre;
+  width:.28em;
 }
 @media(prefers-reduced-motion:reduce){
-  .dmrc-stagger-segment{transition:none!important;transform:none!important;filter:none!important;opacity:1!important}
+  .dmrc-stagger-segment,
+  .dmrc-stagger-space{
+    transition:none!important;
+    transform:none!important;
+    filter:none!important;
+    opacity:1!important;
+  }
 }
