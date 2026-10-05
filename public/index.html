@@ -43,10 +43,11 @@ label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,texta
   z-index:3;
   margin:0;
   font-family:Inter,Arial,Helvetica,sans-serif;
-  font-size:clamp(38px,7vw,72px);
+  font-size:clamp(34px,7vw,72px);
   line-height:1.03;
   font-weight:800;
   letter-spacing:-2px;
+  white-space:nowrap;
   color:#f7f7f5;
   text-shadow:0 10px 35px #0009;
   opacity:1!important;
@@ -65,9 +66,13 @@ label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,texta
   transform:scaleX(1)!important;
 }
 @media(max-width:700px){
+  #staggeredWelcome{
+    width:100%;
+  }
   #staggeredWelcome .dmrc-staggered-text{
-    font-size:clamp(38px,11vw,56px);
-    letter-spacing:-1px;
+    font-size:clamp(30px,9.2vw,42px);
+    letter-spacing:-1.5px;
+    white-space:nowrap;
   }
 }
 </style><link rel="stylesheet" href="/staggered-text.bundle.css?v=20261005-video-staggered-v2"><script defer src="/staggered-text.bundle.js?v=20261005-video-staggered-v2"></script></head>
