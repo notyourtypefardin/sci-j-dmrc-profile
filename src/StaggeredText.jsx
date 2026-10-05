@@ -10,9 +10,9 @@ export default function StaggeredText({
   text = '',
   className = '',
   as: Tag = 'p',
-  segmentBy = 'words',
-  delay = 80,
-  duration = 0.6,
+  segmentBy = 'chars',
+  delay = 35,
+  duration = 0.55,
   direction = 'top',
   blur = true,
   staggerDirection = 'forward',
@@ -53,42 +53,44 @@ export default function StaggeredText({
     return () => observer.disconnect();
   }, [threshold, rootMargin, respectReducedMotion]);
 
-  const ordered = staggerDirection === 'reverse'
-    ? [...segments].reverse()
-    : segments;
+  const order = staggerDirection === 'reverse'
+    ? segments.map((_, i) => segments.length - 1 - i)
+    : segments.map((_, i) => i);
 
-  const distance = direction === 'bottom' ? { x: '0px', y: '24px' } :
-    direction === 'left' ? { x: '24px', y: '0px' } :
-    direction === 'right' ? { x: '-24px', y: '0px' } :
-    { x: '0px', y: '-24px' };
+  const distance = direction === 'bottom' ? { x: '0px', y: '18px' } :
+    direction === 'left' ? { x: '18px', y: '0px' } :
+    direction === 'right' ? { x: '-18px', y: '0px' } :
+    { x: '0px', y: '18px' };
 
   return React.createElement(
     Tag,
     { ref, className: `dmrc-staggered-text ${className}` },
     segments.map((segment, index) => {
-      const orderIndex = ordered.indexOf(segment);
-      const isSpace = /^\\s+$/.test(segment);
-      const safeIndex = orderIndex < 0 ? index : orderIndex;
+      const isSpace = /\\s/.test(segment);
+      const safeIndex = order[index];
       return (
         <span
           key={`${index}-${segment}`}
           className={isSpace ? 'dmrc-stagger-space' : 'dmrc-stagger-segment'}
+          aria-hidden="true"
           style={{
             '--stagger-delay': `${safeIndex * delay}ms`,
             '--stagger-duration': `${duration}s`,
             '--stagger-x': distance.x,
             '--stagger-y': distance.y,
             '--stagger-ease': EASINGS[easing] || easing || EASINGS.anticipate,
-            '--stagger-blur': blur ? '10px' : '0px',
-            opacity: visible || isSpace ? 1 : 0,
-            transform: visible || isSpace ? 'translate3d(0,0,0)' : 'translate3d(var(--stagger-x),var(--stagger-y),0)',
-            filter: visible || isSpace ? 'blur(0)' : 'blur(var(--stagger-blur))',
+            '--stagger-blur': blur ? '12px' : '0px',
+            opacity: visible ? 1 : 0,
+            transform: visible
+              ? 'translate3d(0,0,0)'
+              : 'translate3d(var(--stagger-x),var(--stagger-y),0)',
+            filter: visible ? 'blur(0)' : 'blur(var(--stagger-blur))',
             transition: visible
               ? `opacity var(--stagger-duration) var(--stagger-ease) var(--stagger-delay), transform var(--stagger-duration) var(--stagger-ease) var(--stagger-delay), filter var(--stagger-duration) var(--stagger-ease) var(--stagger-delay)`
               : 'none'
           }}
         >
-          {segment}
+          {segment === ' ' ? '\u00a0' : segment}
         </span>
       );
     })
