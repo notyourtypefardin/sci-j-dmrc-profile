@@ -8,7 +8,7 @@ const mount = () => {
   if (!el) return;
   createRoot(el).render(
     <StaggeredText
-      text="Welcome to DMRC"
+      text={"Welcome to\nDMRC"}
       as="h1"
       segmentBy="chars"
       staggerDirection="forward"
