@@ -155,7 +155,7 @@ async function login(){
  finally{setBusy(loginBtn,false,'Login')}
 }
 async function loadMe(){const r=await fetch('/api/me');if(!r.ok)return;me=await r.json();auth.style.display='none';site.style.display='block';document.body.classList.remove('auth-mode');headUser.textContent=me.user.username;setAvatar(headAvatar,me.profile);setAvatar(heroAvatar,me.profile);setAvatar(composerAvatar,me.profile);if(me.profile)renderProfile(me.profile,me.user);else{showPage('home');onboarding.style.display='block'}await Promise.allSettled([loadPosts(),window.loadCreatorIntro?.()])}
-function setAvatar(el,p){const img=el.querySelector('img'),span=el.querySelector('span');if(p?.avatar_data){img.src=p.avatar_url;img.style.display='block';span.style.display='none'}else{img.removeAttribute('src');img.style.display='none';span.style.display='block';span.textContent=(p?.student_name||'D').charAt(0).toUpperCase()}}
+function setAvatar(el,p){const img=el.querySelector('img'),span=el.querySelector('span');if(p?.avatar_url){img.onload=()=>{img.style.display='block';span.style.display='none'};img.onerror=()=>{img.removeAttribute('src');img.style.display='none';span.style.display='block';span.textContent=(p?.student_name||'D').charAt(0).toUpperCase()};img.src=p.avatar_url;img.style.display='block';span.style.display='none'}else{img.removeAttribute('src');img.style.display='none';span.style.display='block';span.textContent=(p?.student_name||'D').charAt(0).toUpperCase()}}
 function showPage(name){
  const page=document.getElementById(name+'Page'); if(!page)return;
  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));page.classList.add('active');
