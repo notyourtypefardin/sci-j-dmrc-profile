@@ -75,7 +75,38 @@ label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,texta
     white-space:nowrap;
   }
 }
-</style><link rel="stylesheet" href="/staggered-text.bundle.css?v=20261005-space-v4"><script defer src="/staggered-text.bundle.js?v=20261005-space-v4"></script><style>
+</style><style id="dmrc-welcome-animation">
+#staggeredWelcome .dmrc-staggered-text{display:block;margin:0;white-space:normal;overflow:visible}
+#staggeredWelcome .dmrc-stagger-segment,#staggeredWelcome .dmrc-stagger-space{display:inline-block;will-change:transform,opacity,filter}
+#staggeredWelcome .dmrc-stagger-space{white-space:pre;width:.28em}
+@keyframes dmrcWelcomeChar{from{opacity:0;transform:translate3d(0,18px,0);filter:blur(12px)}to{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){#staggeredWelcome .dmrc-stagger-segment,#staggeredWelcome .dmrc-stagger-space{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}}
+</style>
+<script>
+(function(){
+  function mountDMRCWelcome(){
+    var el=document.getElementById('staggeredWelcome');
+    if(!el||el.dataset.dmrcMounted==='1')return;
+    el.dataset.dmrcMounted='1';
+    var text='Welcome to DMRC',frag=document.createDocumentFragment();
+    Array.from(text).forEach(function(ch,i){
+      var s=document.createElement('span');
+      s.className=/\s/.test(ch)?'dmrc-stagger-space':'dmrc-stagger-segment';
+      s.textContent=/\s/.test(ch)?'\u00a0':ch;
+      s.style.animation='dmrcWelcomeChar .55s cubic-bezier(.22,1,.36,1) '+(i*35)+'ms both';
+      frag.appendChild(s);
+    });
+    el.innerHTML='';
+    var h=document.createElement('h1');
+    h.className='dmrc-staggered-text';
+    h.setAttribute('aria-label',text);
+    h.appendChild(frag);
+    el.appendChild(h);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountDMRCWelcome,{once:true});
+  else mountDMRCWelcome();
+})();
+</script><style>
 .search-wrap{width:min(900px,94%);margin:0 auto;padding:30px 0 120px}.search-card{padding:20px;border-radius:24px}.search-title{font-size:28px;font-weight:900;margin-bottom:6px}.search-sub{color:#aeb2bc;font-size:13px;margin-bottom:16px}.search-row{display:flex;gap:8px}.search-row input{flex:1}.search-row button{min-width:90px}.search-results{display:grid;gap:10px;margin-top:16px}.search-item{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #ffffff16;border-radius:16px;background:#ffffff07;cursor:pointer;text-align:left}.search-item:hover{background:#ffffff0d}.search-meta{min-width:0}.search-name{font-weight:850}.search-user{color:#a9adb7;font-size:12px}.search-empty{color:#8e939d;text-align:center;padding:24px}.viewer{margin-top:18px;padding:20px;border-radius:24px;display:none}.viewer-head{display:flex;align-items:center;gap:14px}.viewer-name{font-size:22px;font-weight:900}.viewer-user{color:#a9adb7}.viewer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.viewer-posts{display:grid;gap:10px;margin-top:16px}.post-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.post-actions button{padding:8px 11px;font-size:12px;background:#ffffff0b;border:1px solid #ffffff18}.post-actions button.active{background:#ed1c2422;border-color:#ed1c2466}.post-comments{display:none;margin-top:12px;border-top:1px solid #ffffff12;padding-top:12px}.comment-list{display:grid;gap:7px;margin-bottom:8px}.comment-item{font-size:13px;padding:8px 10px;border-radius:10px;background:#ffffff07}.comment-form{display:flex;gap:7px}.comment-form input{min-width:0}.comment-form button{padding:9px 12px}.post-owner-actions{margin-left:auto;display:flex;gap:5px}.post-owner-actions button{padding:7px 9px;background:#ffffff08;border:1px solid #ffffff14;font-size:11px}.post-head{align-items:flex-start}.post-time{white-space:nowrap}.post-media{max-width:100%;border-radius:16px;display:block;margin-top:12px}.post-body{white-space:pre-wrap;word-break:break-word}
 @media(max-width:560px){.viewer-grid{grid-template-columns:1fr}.search-row{flex-direction:column}.search-row button{width:100%}.post-time{font-size:10px}.post-owner-actions{margin-left:0}}
 </style></head>
