@@ -237,6 +237,8 @@ async function start(){
   if(production && sessionSecret.length<32) throw new Error("SESSION_SECRET must be configured with at least 32 characters in production.");
   await initDatabase();await ensureAdmin();
   try{await dbRun(`CREATE TABLE IF NOT EXISTS creator_intro(id INTEGER PRIMARY KEY,creator_text TEXT NOT NULL,creator_image_data TEXT,creator_crop TEXT NOT NULL DEFAULT '{"x":50,"y":50,"zoom":1}',updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`);await dbRun('INSERT INTO creator_intro(id,creator_text,creator_image_data) SELECT 1,?,? WHERE NOT EXISTS (SELECT 1 FROM creator_intro WHERE id=1)',['Hey, Im Fardin (you can also call me Siuuu), a Science student at DMRC (Section J).',null]);}catch(e){console.error('Creator intro init failed:',e)}
+  app.disable("x-powered-by");
+  app.set("trust proxy",1);
   app.use(helmet({contentSecurityPolicy:false,crossOriginEmbedderPolicy:false,referrerPolicy:{policy:"strict-origin-when-cross-origin"}}));
   app.use(express.json({limit:"12mb"}));app.use(express.urlencoded({extended:true,limit:"1mb"}));
   const authLimiter=rateLimit({windowMs:15*60*1000,limit:12,standardHeaders:"draft-8",legacyHeaders:false,message:{error:"Too many login attempts. Please try again later."}});
