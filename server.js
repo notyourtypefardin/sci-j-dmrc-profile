@@ -212,6 +212,14 @@ async function aiExternalReply(message,history,memories){
   return answer.trim();
 }
 
+async function requirePersonalAI(req,res,next){
+  if(!req.session.userId)return res.status(401).json({error:"Login required."});
+  const u=await dbGet("SELECT username FROM users WHERE id=?",[req.session.userId]);
+  if(!u||!isAdminUsername(u.username))return res.status(403).json({error:"Personal AI is owner-only."});
+  req.session.adminId=req.session.userId;
+  next();
+}
+
 async function start(){
   await initDatabase();await ensureAdmin();
   try{await dbRun(`CREATE TABLE IF NOT EXISTS creator_intro(id INTEGER PRIMARY KEY,creator_text TEXT NOT NULL,creator_image_data TEXT,creator_crop TEXT NOT NULL DEFAULT '{"x":50,"y":50,"zoom":1}',updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`);await dbRun('INSERT INTO creator_intro(id,creator_text,creator_image_data) SELECT 1,?,? WHERE NOT EXISTS (SELECT 1 FROM creator_intro WHERE id=1)',['Hey, Im Fardin (you can also call me Siuuu), a Science student at DMRC (Section J).',null]);}catch(e){console.error('Creator intro init failed:',e)}
