@@ -149,8 +149,8 @@ label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,texta
 <main id="aiPage" class="page"><div class="ai-page"><section class="ai-card glass"><div class="ai-kicker">SCI J • PERSONAL AI</div><div class="ai-title">Your private project assistant</div><div class="ai-sub">Free Knowledge Mode • owner-only • memory enabled</div><div id="aiQuick" class="ai-quick"><button onclick="aiAsk('What do you know about SCI J?')">SCI J knowledge</button><button onclick="aiAsk('Show my saved memory')">Memory</button><button onclick="aiAsk('Give me current project status')">Status</button></div><div id="aiMessages" class="ai-messages"></div><form id="aiForm" class="ai-form"><input id="aiInput" maxlength="2000" autocomplete="off" placeholder="Ask your Personal AI…"><button>Send</button></form><div id="aiStatus" class="ai-status"></div></section></div></main></div>
 <script>
 const auth=document.getElementById('auth'),site=document.getElementById('site'),authMsg=document.getElementById('authMsg');let me=null;
-async function campusImage(){try{const a=await Promise.all([1,2,3,4,5,6,7,8].map(n=>fetch('/bg/chunk'+n+'.txt').then(r=>r.text())));return 'data:image/jpeg;base64,'+a.join('')}catch(e){return ''}}
-(async()=>{const a=await Promise.all([1,2,3,4,5,6,7,8].map(n=>fetch('/bg/chunk'+n+'.txt',{cache:'no-store'}).then(r=>r.text())));const campus='data:image/jpeg;base64,'+a.join('');document.documentElement.style.setProperty('--campus-bg','url("'+campus+'")');document.getElementById('profileCover').style.backgroundImage='url("'+campus+'")'})();
+function campusImage(){return '/file_000000004ea4820883ccbb5d217d3d92.png'}
+(function(){const campus='/file_000000004ea4820883ccbb5d217d3d92.png';document.documentElement.style.setProperty('--campus-bg','url("'+campus+'")');const cover=document.getElementById('profileCover');if(cover)cover.style.backgroundImage='url("'+campus+'")'})();
 function msg(el,t){el.textContent=t;el.style.display='block'}
 function setBusy(btn,busy,label){if(!btn)return;btn.disabled=busy;btn.dataset.originalLabel??=btn.textContent;btn.textContent=busy?label:btn.dataset.originalLabel;btn.style.opacity=busy?'.7':'';btn.style.pointerEvents=busy?'none':''}
 function togglePassword(id,btn){const input=document.getElementById(id);if(!input)return;const show=input.type==='password';input.type=show?'text':'password';btn.textContent=show?'Hide':'Show'}
@@ -185,6 +185,24 @@ async function login(){
  }catch(e){msg(authMsg,'Network problem. Please check your connection and try again.')}
  finally{setBusy(loginBtn,false,'Login')}
 }
+async function loadCreatorIntro(){
+ const textEl=document.getElementById('creatorText'),img=document.getElementById('creatorAvatarImg'),avatar=document.getElementById('creatorAvatar');
+ if(!textEl)return;
+ try{
+  const r=await fetch('/api/creator-intro',{cache:'no-store'});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(d.error||'Could not load creator introduction.');
+  textEl.textContent=d.creator_text||'Welcome to DMRC — a student community built for DMRC students.';
+  if(img){
+   if(d.image_url){img.onload=()=>{img.style.display='block';if(avatar){const s=avatar.querySelector('span');if(s)s.style.display='none'}};img.onerror=()=>{img.style.display='none'};img.src=d.image_url}
+   else {img.removeAttribute('src');img.style.display='none'}
+  }
+ }catch(e){
+  textEl.textContent='Creator introduction is currently unavailable.';
+ }
+}
+window.loadCreatorIntro=loadCreatorIntro;
+
 async function loadMe(){const r=await fetch('/api/me');if(!r.ok)return;me=await r.json();auth.style.display='none';site.style.display='block';document.body.classList.remove('auth-mode');headUser.textContent=me.user.username;setAvatar(headAvatar,me.profile);setAvatar(heroAvatar,me.profile);setAvatar(composerAvatar,me.profile);if(me.profile)renderProfile(me.profile,me.user);else{showPage('home');onboarding.style.display='block'}await Promise.allSettled([loadPosts(),window.loadCreatorIntro?.()])}
 function setAvatar(el,p){const img=el.querySelector('img'),span=el.querySelector('span');if(p?.avatar_url){img.onload=()=>{img.style.display='block';span.style.display='none'};img.onerror=()=>{img.removeAttribute('src');img.style.display='none';span.style.display='block';span.textContent=(p?.student_name||'D').charAt(0).toUpperCase()};img.src=p.avatar_url;img.style.display='block';span.style.display='none'}else{img.removeAttribute('src');img.style.display='none';span.style.display='block';span.textContent=(p?.student_name||'D').charAt(0).toUpperCase()}}
 function showPage(name){
