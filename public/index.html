@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="ui-version" content="2026.10.16-liquid-glass-01"><link rel="preload" as="image" href="/file_000000004ea4820883ccbb5d217d3d92.png" fetchpriority="high"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>DMRC • SCI J</title>
+<meta name="ui-version" content="2026.10.16-liquid-glass-02"><link rel="preload" as="image" href="/file_000000004ea4820883ccbb5d217d3d92.png" fetchpriority="high"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>DMRC • SCI J</title>
 <style>
 *{box-sizing:border-box} :root{--red:#ed1c24;--red2:#ff3640;--ink:#090a0d;--panel:#101216e8;--line:#ffffff16;--muted:#a9adb7;--ease:cubic-bezier(.22,.8,.2,1);--campus-bg:url('/file_000000004ea4820883ccbb5d217d3d92.png')}
 html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:#07080a;color:#fff;min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body::selection{background:#ed1c2455;color:#fff}
@@ -157,5 +157,186 @@ function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function postHTML(p){const avatar=p.avatar_data?'<img src="'+p.avatar_data+'" alt="">':'<span>'+esc((p.student_name||'D').charAt(0).toUpperCase())+'</span>';let media='';if(p.media_data)media=p.media_type?.startsWith('video/')?'<video class="post-media" controls playsinline preload="metadata" src="'+p.media_data+'"></video>':'<img class="post-media" src="'+p.media_data+'" alt="Shared image" loading="lazy" decoding="async">';return '<article class="post glass"><div class="post-head"><div class="author"><div class="mini-avatar">'+avatar+'</div><div><div class="author-name">'+esc(p.student_name||p.username)+'</div><div class="author-user">@'+esc(p.username)+'</div></div></div><div class="post-time">'+new Date(p.created_at.replace(' ','T')+'Z').toLocaleString()+'</div></div>'+(p.body?'<div class="post-body">'+esc(p.body)+'</div>':'')+media+'</article>'}
 async function aiLoad(){const box=document.getElementById('aiMessages');if(!box)return;try{const r=await fetch('/api/ai/history',{cache:'no-store'});if(!r.ok){document.getElementById('aiStatus').textContent='Personal AI is available to the owner account.';return}const a=await r.json();box.innerHTML=a.map(x=>'<div class="ai-msg '+x.role+'">'+esc(x.content)+'</div>').join('');box.scrollTop=box.scrollHeight}catch{}}async function aiAsk(q){const i=document.getElementById('aiInput');if(i){i.value=q;document.getElementById('aiForm').requestSubmit()}}document.getElementById('aiForm')?.addEventListener('submit',async e=>{e.preventDefault();const i=document.getElementById('aiInput'),box=document.getElementById('aiMessages'),st=document.getElementById('aiStatus'),q=i.value.trim();if(!q)return;box.insertAdjacentHTML('beforeend','<div class="ai-msg user">'+esc(q)+'</div>');i.value='';st.textContent='Thinking…';box.scrollTop=box.scrollHeight;try{const r=await fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q})}),d=await r.json();if(!r.ok)throw new Error(d.error||'AI unavailable');box.insertAdjacentHTML('beforeend','<div class="ai-msg assistant">'+esc(d.answer||'No answer.')+'</div>');st.textContent=d.mode==='external'?'External AI provider':'Free Knowledge Mode';box.scrollTop=box.scrollHeight}catch(err){box.insertAdjacentHTML('beforeend','<div class="ai-msg assistant">Sorry — '+esc(err.message)+'</div>');st.textContent='';}});async function logout(){await fetch('/api/logout',{method:'POST'});location.reload()}loadMe();
 </script>
-<div id="creatorAdminPanel" class="creator-admin-panel" aria-hidden="true"><div class="creator-admin-card"><h3>Edit Creator Introduction</h3><p>Admin-only controls. Creator image is stored separately from every profile picture.</p><label>Creator introduction</label><textarea id="creatorAdminText" maxlength="1200"></textarea><label>Creator image</label><input id="creatorAdminImage" type="file" accept="image/*"><div class="creator-admin-preview crop-preview"><img id="creatorAdminPreview" alt="Preview"></div><div class="creator-crop-controls"><label>Zoom <input id="creatorCropZoom" type="range" min="1" max="3" step="0.01" value="1"></label><label>Horizontal <input id="creatorCropX" type="range" min="0" max="100" step="1" value="50"></label><label>Vertical <input id="creatorCropY" type="range" min="0" max="100" step="1" value="50"></label></div><div class="creator-admin-actions"><button type="button" class="alt" onclick="window.closeCreatorEditor?.()">Cancel</button><button type="button" onclick="window.saveCreatorIntro?.()">Save changes</button></div></div></div><style>.creator-editable-avatar{position:relative}.creator-image-edit-btn{position:absolute;right:-3px;bottom:-3px;width:28px;height:28px;border:1px solid #ffffff35;border-radius:50%;background:#ed1c24;color:#fff;font-size:12px;line-height:28px;padding:0;box-shadow:0 5px 15px #0008;z-index:4}.creator-image-edit-btn:active{transform:scale(.94)}</style><script src="/upgrade.js?v=20261016-01" defer></script>
+<div id="creatorAdminPanel" class="creator-admin-panel" aria-hidden="true"><div class="creator-admin-card"><h3>Edit Creator Introduction</h3><p>Admin-only controls. Creator image is stored separately from every profile picture.</p><label>Creator introduction</label><textarea id="creatorAdminText" maxlength="1200"></textarea><label>Creator image</label><input id="creatorAdminImage" type="file" accept="image/*"><div class="creator-admin-preview crop-preview"><img id="creatorAdminPreview" alt="Preview"></div><div class="creator-crop-controls"><label>Zoom <input id="creatorCropZoom" type="range" min="1" max="3" step="0.01" value="1"></label><label>Horizontal <input id="creatorCropX" type="range" min="0" max="100" step="1" value="50"></label><label>Vertical <input id="creatorCropY" type="range" min="0" max="100" step="1" value="50"></label></div><div class="creator-admin-actions"><button type="button" class="alt" onclick="window.closeCreatorEditor?.()">Cancel</button><button type="button" onclick="window.saveCreatorIntro?.()">Save changes</button></div></div></div><style>.creator-editable-avatar{position:relative}.creator-image-edit-btn{position:absolute;right:-3px;bottom:-3px;width:28px;height:28px;border:1px solid #ffffff35;border-radius:50%;background:#ed1c24;color:#fff;font-size:12px;line-height:28px;padding:0;box-shadow:0 5px 15px #0008;z-index:4}.creator-image-edit-btn:active{transform:scale(.94)}
+/* DMRC • Liquid Glass 02 — layered optics, red/graphite identity, mobile-first */
+:root{
+  --lg-red:rgba(237,28,36,.18);
+  --lg-glass:rgba(15,19,27,.46);
+  --lg-edge:rgba(244,248,255,.25);
+  --lg-soft-edge:rgba(244,248,255,.12);
+  --lg-reflect:rgba(255,255,255,.12);
+  --lg-ease:cubic-bezier(.2,.78,.2,1);
+}
+html{scroll-padding-top:84px}
+body{background:#07080b}
+button,input,textarea,select{-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:2px solid rgba(255,105,112,.9);outline-offset:3px
+}
+/* Optical depth: brighter upper edge, soft refraction tint, dark readable core. */
+.glass,.auth-card,.topbar,.nav,.search-panel,.visitor-inner,.creator-admin-card,.ai-card{
+  border:1px solid var(--lg-edge);
+  box-shadow:0 22px 65px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.17),inset 0 -1px 0 rgba(214,228,255,.045);
+}
+.glass{
+  background-image:radial-gradient(130% 90% at var(--lgx,50%) var(--lgy,0%),rgba(255,255,255,.105),transparent 48%),linear-gradient(135deg,rgba(236,242,255,.075),rgba(17,22,31,.43) 42%,rgba(7,10,16,.40) 100%);
+  background-color:var(--lg-glass);
+  backdrop-filter:blur(22px) saturate(155%);
+  -webkit-backdrop-filter:blur(22px) saturate(155%);
+}
+.auth-card{
+  background:radial-gradient(120% 80% at var(--lgx,50%) var(--lgy,0%),rgba(255,255,255,.12),transparent 52%),linear-gradient(145deg,rgba(24,30,41,.58),rgba(7,10,16,.48) 72%);
+  backdrop-filter:blur(12px) saturate(135%);-webkit-backdrop-filter:blur(12px) saturate(135%);
+}
+.topbar{
+  background:linear-gradient(115deg,rgba(9,12,18,.78),rgba(25,29,38,.68) 52%,rgba(8,11,16,.82));
+  backdrop-filter:blur(28px) saturate(175%);-webkit-backdrop-filter:blur(28px) saturate(175%);
+  border-bottom-color:rgba(245,248,255,.18)
+}
+.nav{
+  isolation:isolate;
+  background:linear-gradient(150deg,rgba(66,72,84,.56),rgba(15,18,26,.74) 54%,rgba(31,35,44,.72));
+  backdrop-filter:blur(30px) saturate(185%);-webkit-backdrop-filter:blur(30px) saturate(185%);
+  border-color:rgba(250,252,255,.28);
+  box-shadow:0 24px 60px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.26),inset 0 -1px 0 rgba(255,255,255,.055),0 0 0 1px rgba(0,0,0,.18);
+}
+.nav:before{
+  content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:linear-gradient(120deg,rgba(255,255,255,.13),transparent 28%,transparent 70%,rgba(255,255,255,.07));
+}
+.nav button{transition:color .3s ease,transform .38s var(--lg-ease),background .3s ease}
+.nav button.active::after{
+  background:radial-gradient(circle at 30% 12%,rgba(255,255,255,.3),transparent 62%),linear-gradient(145deg,rgba(255,255,255,.22),rgba(194,207,229,.07));
+  border:1px solid rgba(255,255,255,.21);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.05),0 5px 20px rgba(0,0,0,.24),0 0 18px rgba(237,28,36,.10);
+}
+.nav button.active{color:#fff}
+.nav button.active svg{filter:drop-shadow(0 0 7px rgba(255,255,255,.25))}
+button{
+  position:relative;isolation:isolate;overflow:hidden;
+  transition:transform .3s var(--lg-ease),box-shadow .3s ease,background .3s ease,border-color .3s ease,filter .3s ease;
+}
+button:not(.nav button):not(.social-btn){
+  box-shadow:0 8px 24px rgba(237,28,36,.18),inset 0 1px 0 rgba(255,255,255,.14)
+}
+button:not(.nav button):not(.social-btn):active{transform:scale(.975)}
+button.alt,.tabs button:not(.active),.media-label,.social-btn{
+  background:linear-gradient(135deg,rgba(244,247,255,.10),rgba(167,187,219,.025));
+  border-color:rgba(235,242,255,.19);box-shadow:inset 0 1px 0 rgba(255,255,255,.09)
+}
+input,textarea,select,.composer-top textarea,.search-input{
+  background-color:rgba(8,11,17,.40);border-color:rgba(239,245,255,.20);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045);
+  transition:border-color .28s ease,box-shadow .28s ease,background-color .28s ease
+}
+input:focus,textarea:focus,select:focus,.composer-top textarea:focus,.search-input:focus{
+  border-color:rgba(255,104,112,.64);
+  background-color:rgba(12,15,22,.58);
+  box-shadow:0 0 0 4px rgba(237,28,36,.12),0 8px 25px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.09)
+}
+.hero{
+  background:radial-gradient(90% 90% at var(--lgx,50%) var(--lgy,0%),rgba(255,255,255,.12),transparent 54%),linear-gradient(135deg,rgba(241,245,255,.10),rgba(18,24,34,.40) 45%,rgba(8,12,18,.42) 78%,rgba(237,28,36,.10));
+  border-color:rgba(245,248,255,.25);backdrop-filter:blur(25px) saturate(155%);-webkit-backdrop-filter:blur(25px) saturate(155%);
+}
+.composer,.post,.profile-card,.creator-intro,.ai-card,.search-panel,.visitor-inner,.creator-admin-card{
+  background-image:radial-gradient(115% 85% at var(--lgx,50%) var(--lgy,0%),rgba(255,255,255,.095),transparent 50%),linear-gradient(145deg,rgba(225,237,255,.075),rgba(15,20,29,.45) 44%,rgba(6,9,15,.43));
+  border-color:rgba(241,247,255,.21);
+}
+.composer,.post,.profile-card,.creator-intro,.ai-card,.search-panel,.visitor-inner,.creator-admin-card{
+  backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);
+}
+.post{transition:transform .35s var(--lg-ease),border-color .3s ease,box-shadow .3s ease}
+.profile-card{overflow:hidden}
+.profile-cover{background-position:center;background-size:cover}
+.profile-avatar{box-shadow:0 0 0 1px rgba(255,255,255,.15),0 14px 32px rgba(0,0,0,.32)}
+.info{background:linear-gradient(145deg,rgba(236,242,255,.075),rgba(8,12,18,.28));border:1px solid rgba(240,246,255,.13);border-radius:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:transform .3s var(--lg-ease),border-color .3s ease,background .3s ease}
+.profile-actions{gap:10px}
+.creator-intro{border-radius:24px}
+.creator-admin-panel{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.creator-admin-card{border-radius:26px}
+.ai-card{border-radius:28px}
+.search-panel{background-color:rgba(9,13,20,.48)}
+.search-result{border-color:rgba(244,248,255,.12);background:linear-gradient(135deg,rgba(241,246,255,.085),rgba(8,12,18,.25))}
+.search-result:hover{border-color:rgba(255,255,255,.24);box-shadow:0 16px 35px rgba(0,0,0,.35)}
+.search-result.exact{border-color:rgba(237,28,36,.55);background:linear-gradient(135deg,rgba(237,28,36,.18),rgba(255,255,255,.04))}
+.visitor-card{background:rgba(2,4,8,.68);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+/* Smooth, directional page transitions without layout thrash. */
+.page.active{animation:lgPageEnter .48s var(--lg-ease) both}
+.page.active .glass{animation:lgSurfaceEnter .58s var(--lg-ease) both}
+.search-in-left{animation:lgSlideInLeft .46s var(--lg-ease) both!important}
+.search-in-right{animation:lgSlideInRight .46s var(--lg-ease) both!important}
+@keyframes lgPageEnter{from{opacity:0;transform:translate3d(0,10px,0);filter:blur(3px)}to{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}}
+@keyframes lgSlideInLeft{from{opacity:0;transform:translate3d(18px,0,0);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes lgSlideInRight{from{opacity:0;transform:translate3d(-18px,0,0);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes lgSurfaceEnter{from{opacity:.7;transform:translate3d(0,9px,0) scale(.992)}to{opacity:1;transform:none}}
+@media (hover:hover) and (pointer:fine){
+  .glass:hover,.post:hover,.profile-card:hover,.search-panel:hover,.creator-intro:hover,.ai-card:hover{
+    border-color:rgba(245,249,255,.28);box-shadow:0 28px 76px rgba(0,0,0,.40),inset 0 1px 0 rgba(255,255,255,.19)
+  }
+  .info:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.24)}
+}
+@media(max-width:700px){
+  .topbar{height:64px;padding-left:14px;padding-right:14px}
+  .brand img{height:46px;width:42px}
+  .page{min-height:calc(100vh - 64px)}
+  .home-bg,.profile-wrap:before,.profile-wrap:after{top:64px}
+  .container{width:min(100% - 24px,1120px);padding-top:18px;padding-bottom:112px}
+  .hero{padding:42px 17px 38px;border-radius:25px}
+  .hero h1{font-size:clamp(34px,9vw,52px);letter-spacing:-1px}
+  .hero-orbit.orbit-one{width:min(110vw,400px);height:min(110vw,400px)}
+  .hero-orbit.orbit-two{width:min(72vw,280px);height:min(72vw,280px)}
+  .composer,.post{padding:14px;border-radius:20px}
+  .profile-wrap{width:calc(100% - 24px);padding-top:18px;padding-bottom:112px}
+  .profile-cover{height:190px}
+  .profile-content{padding:0 17px 22px}
+  .profile-grid{gap:9px}
+  .info{padding:12px}
+  .nav{bottom:max(10px,env(safe-area-inset-bottom));max-width:calc(100vw - 24px);gap:2px;padding:5px}
+  .nav button{width:clamp(43px,12vw,49px);height:47px}
+  .search-shell{padding:15px 12px 110px}
+  .search-panel{padding:17px;border-radius:24px}
+  .creator-intro{padding:18px;border-radius:22px}
+  .ai-page{padding:18px 12px 110px}
+  .ai-card{padding:18px;border-radius:24px}
+}
+@media(max-width:380px){
+  .nav button{width:42px;height:44px}
+  .brand strong{font-size:16px}
+  .brand small{letter-spacing:1.4px}
+  .composer-actions{align-items:stretch;flex-wrap:wrap}
+}
+@media(prefers-reduced-transparency:reduce){
+  .glass,.auth-card,.topbar,.nav,.hero,.composer,.post,.profile-card,.creator-intro,.ai-card,.search-panel,.visitor-inner,.creator-admin-card{
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background-color:rgba(12,15,21,.94)!important
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+
+</style><script src="/upgrade.js?v=20261016-01" defer></script>
+
+<script>
+/* Subtle cursor-lit reflection on capable desktop pointers only; no continuous animation loop. */
+(()=> {
+  const surfaces='.glass,.auth-card,.topbar,.nav,.search-panel,.visitor-inner,.creator-admin-card,.ai-card';
+  let lastTarget=null;
+  document.addEventListener('pointermove',e=>{
+    if(e.pointerType!=='mouse' || !matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+    const target=e.target.closest(surfaces);
+    if(lastTarget && lastTarget!==target){lastTarget.style.removeProperty('--lgx');lastTarget.style.removeProperty('--lgy')}
+    lastTarget=target;
+    if(!target)return;
+    const r=target.getBoundingClientRect();
+    target.style.setProperty('--lgx',Math.round((e.clientX-r.left)/Math.max(1,r.width)*100)+'%');
+    target.style.setProperty('--lgy',Math.round((e.clientY-r.top)/Math.max(1,r.height)*100)+'%');
+  },{passive:true});
+  document.addEventListener('pointerout',e=>{
+    if(e.pointerType==='mouse' && lastTarget && !e.relatedTarget?.closest?.(surfaces)){
+      lastTarget.style.removeProperty('--lgx');lastTarget.style.removeProperty('--lgy');lastTarget=null;
+    }
+  },{passive:true});
+})();
+</script>
+
 </body></html>
