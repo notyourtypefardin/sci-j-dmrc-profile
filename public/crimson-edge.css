@@ -193,3 +193,172 @@ button:focus-visible,[role="button"]:focus-visible{outline:2px solid #ff737a!imp
 @media(prefers-reduced-motion:reduce){
   .nav:before,.nav button.active:before{animation:none!important}
 }
+
+
+/* DMRC Crimson Obsidian + Refined Liquid Glass — v2 visual layer
+   CSS-only; preserve application markup, logo artwork, login background, and auth/backend behavior. */
+:root{
+  --ce2-red:#ed1c24;
+  --ce2-red-hot:#ff4650;
+  --ce2-ink:#08090d;
+  --ce2-glass:rgba(19,21,28,.76);
+  --ce2-glass-hi:rgba(33,35,43,.72);
+  --ce2-edge:rgba(255,255,255,.16);
+  --ce2-edge-hot:rgba(255,255,255,.26);
+  --ce2-ease:cubic-bezier(.19,.78,.22,1);
+}
+body{
+  background:
+    radial-gradient(ellipse at 50% -20%,rgba(237,28,36,.14),transparent 48%),
+    #08090d!important;
+}
+.topbar{
+  background:linear-gradient(180deg,rgba(27,29,36,.88),rgba(8,9,13,.74))!important;
+  border-bottom-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.13)!important;
+  backdrop-filter:blur(18px) saturate(145%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(145%)!important;
+}
+.brand strong{letter-spacing:.6px;text-shadow:0 2px 18px rgba(0,0,0,.35)}
+.brand small{color:rgba(255,255,255,.58)!important}
+.nav{
+  background:
+    radial-gradient(130% 160% at 10% 0%,rgba(255,255,255,.19),transparent 42%),
+    linear-gradient(145deg,rgba(44,47,57,.82),rgba(12,13,19,.84) 58%,rgba(35,12,17,.82))!important;
+  border-color:rgba(255,255,255,.3)!important;
+  box-shadow:0 20px 56px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.29),inset 0 -1px 0 rgba(255,255,255,.06)!important;
+  backdrop-filter:blur(22px) saturate(155%)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(155%)!important;
+}
+.nav button.active:after{
+  background:radial-gradient(circle at 28% 4%,rgba(255,255,255,.3),transparent 68%),linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.055))!important;
+  border-color:rgba(255,255,255,.28)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 6px 18px rgba(0,0,0,.22),0 0 18px rgba(237,28,36,.1)!important;
+}
+.hero{
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(237,28,36,.16),transparent 48%),
+    linear-gradient(145deg,rgba(33,34,42,.82),rgba(12,13,18,.88) 62%,rgba(39,12,18,.78))!important;
+  border:1px solid rgba(255,255,255,.2)!important;
+  box-shadow:0 28px 76px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.15),inset 0 -1px 0 rgba(255,255,255,.035)!important;
+  backdrop-filter:blur(15px) saturate(130%);
+  -webkit-backdrop-filter:blur(15px) saturate(130%);
+}
+.hero:before{
+  opacity:.42!important;
+  background:linear-gradient(112deg,transparent 25%,rgba(255,255,255,.13) 43%,rgba(255,255,255,.025) 50%,transparent 63%)!important;
+  animation:ce2HeroSheen 8s cubic-bezier(.4,0,.2,1) infinite!important;
+}
+.hero:after{
+  width:min(54vw,340px)!important;height:min(54vw,340px)!important;
+  background:radial-gradient(circle,rgba(237,28,36,.22),rgba(237,28,36,.055) 42%,transparent 72%)!important;
+  filter:none!important;
+  animation:ce2Halo 7s ease-in-out infinite alternate!important;
+}
+.hero h1{
+  text-shadow:0 8px 38px rgba(0,0,0,.34);
+  text-wrap:balance;
+}
+.hero h1 .red-d,.hero h1 b{
+  color:#ff525b!important;
+  text-shadow:0 0 26px rgba(237,28,36,.3)!important;
+}
+.hero-line{
+  background:linear-gradient(90deg,transparent,#ed1c24 22%,#ff7076 50%,#ed1c24 78%,transparent)!important;
+  box-shadow:0 0 20px rgba(237,28,36,.35)!important;
+}
+.composer,.profile-card,.form-card,.search-panel,.creator-intro,.creator-admin-card,.ai-card,.visitor-inner{
+  background:
+    radial-gradient(ellipse at 0 0,rgba(255,255,255,.055),transparent 42%),
+    linear-gradient(145deg,rgba(25,27,34,.9),rgba(10,11,16,.94))!important;
+  border-color:rgba(255,255,255,.16)!important;
+  box-shadow:0 22px 58px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.025)!important;
+}
+.composer,.search-panel,.creator-intro,.ai-card{
+  backdrop-filter:blur(12px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(12px) saturate(125%)!important;
+}
+.post{
+  background:linear-gradient(145deg,rgba(25,27,34,.96),rgba(11,12,17,.97))!important;
+  border-color:rgba(255,255,255,.13)!important;
+  box-shadow:0 16px 38px rgba(0,0,0,.27),inset 0 1px 0 rgba(255,255,255,.08)!important;
+  transition:transform .32s var(--ce2-ease),border-color .32s ease,box-shadow .32s ease!important;
+}
+.post-head{gap:12px}
+.author-name{letter-spacing:.1px}
+.post-body{color:rgba(245,246,249,.94)!important}
+.profile-card{overflow:hidden}
+.profile-cover{background-image:linear-gradient(115deg,rgba(237,28,36,.14),transparent 45%,rgba(255,255,255,.04))!important}
+.profile-content{
+  background:
+    radial-gradient(ellipse at 0 0,rgba(237,28,36,.07),transparent 50%),
+    linear-gradient(180deg,rgba(24,25,32,.97),rgba(11,12,17,.98))!important;
+}
+.profile-avatar{
+  border-color:#1a1b21!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.22),0 0 0 5px rgba(237,28,36,.12)!important;
+}
+.info{
+  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018))!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+.info b{color:#aeb1bc!important}
+.search-shell{isolation:isolate}
+.search-panel h1,.search-panel h2,.creator-intro h1,.creator-intro h2{letter-spacing:-.65px}
+.creator-kicker{color:#ff737a!important}
+input,textarea,select,.search-input,.composer-top textarea{
+  background:rgba(255,255,255,.055)!important;
+  border-color:rgba(255,255,255,.16)!important;
+}
+input:focus,textarea:focus,select:focus,.search-input:focus,.composer-top textarea:focus{
+  border-color:rgba(255,91,100,.76)!important;
+  box-shadow:0 0 0 3px rgba(237,28,36,.14),inset 0 1px 0 rgba(255,255,255,.045)!important;
+}
+button:not(.nav button){transition:transform .24s var(--ce2-ease),background .24s ease,border-color .24s ease,box-shadow .24s ease!important}
+button:active{transform:scale(.975)!important}
+.auth-card{
+  border-color:rgba(255,255,255,.22)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.15)!important;
+}
+/* Keep the existing login background image and .bg treatment untouched. */
+@keyframes ce2HeroSheen{
+  0%,15%{transform:translateX(-120%);opacity:0}
+  32%{opacity:.75}
+  55%{transform:translateX(120%);opacity:.3}
+  66%,100%{transform:translateX(120%);opacity:0}
+}
+@keyframes ce2Halo{from{opacity:.45;transform:translate(-50%,-50%) scale(.94)}to{opacity:.78;transform:translate(-50%,-50%) scale(1.04)}}
+@media(hover:hover) and (pointer:fine){
+  .post:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)!important;box-shadow:0 22px 48px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.1)!important}
+  .composer:hover,.search-panel:hover,.creator-intro:hover,.ai-card:hover{border-color:rgba(255,255,255,.21)!important}
+}
+@media(max-width:700px){
+  .topbar{backdrop-filter:blur(13px) saturate(135%)!important;-webkit-backdrop-filter:blur(13px) saturate(135%)!important}
+  .hero{
+    backdrop-filter:blur(8px) saturate(115%)!important;
+    -webkit-backdrop-filter:blur(8px) saturate(115%)!important;
+    box-shadow:0 20px 48px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.13)!important;
+  }
+  .hero:before{animation:none!important;opacity:.22!important;transform:none!important}
+  .hero:after{animation:none!important;opacity:.5!important}
+  .hero-orbit{animation:none!important;opacity:.28!important}
+  .composer,.search-panel,.creator-intro,.ai-card{
+    backdrop-filter:blur(7px) saturate(112%)!important;
+    -webkit-backdrop-filter:blur(7px) saturate(112%)!important;
+  }
+  .home-bg,.profile-wrap:before{animation:none!important}
+  .post{transition:border-color .2s ease!important}
+  .post:hover{transform:none!important}
+}
+@media(max-width:380px){
+  .hero h1{letter-spacing:-1px!important}
+  .nav{max-width:calc(100vw - 20px)!important}
+}
+@media(prefers-reduced-transparency:reduce){
+  .topbar,.nav,.hero,.composer,.search-panel,.creator-intro,.ai-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero:before,.hero:after,.hero-orbit,.nav:before,.nav button.active:before{animation:none!important}
+  .page.active,.page.active .glass,.post,.profile-avatar{animation:none!important}
+}
