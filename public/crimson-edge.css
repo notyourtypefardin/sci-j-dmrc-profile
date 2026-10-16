@@ -1,0 +1,109 @@
+/* DMRC Crimson Edge — Apple Liquid Glass-inspired web layer
+   Direction: restrained glass for navigation/controls; legible standard surfaces for content.
+   Mobile-first, low-motion, no continuous expensive blur animations. */
+:root{
+  --ce-red:#ed1c24;--ce-red-soft:#ff4b54;--ce-bg:#08090c;
+  --ce-panel:rgba(17,19,24,.94);--ce-panel-soft:rgba(20,22,28,.84);
+  --ce-edge:rgba(255,255,255,.12);--ce-edge-strong:rgba(255,255,255,.22);
+  --ce-text:#f7f7f9;--ce-muted:#a7aab4;--ce-ease:cubic-bezier(.2,.75,.25,1);
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 50% -15%,rgba(237,28,36,.11),transparent 46%),#08090c!important;color:var(--ce-text)}
+/* Login: preserve the existing background image and its treatment. */
+.auth-card{
+  border:1px solid rgba(255,255,255,.22)!important;
+  background:linear-gradient(145deg,rgba(28,29,34,.66),rgba(9,10,13,.78))!important;
+  box-shadow:0 28px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.16)!important;
+  border-radius:24px!important;
+}
+.auth-card:after{content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;border-top:1px solid rgba(255,255,255,.14)}
+/* Floating functional layer — the primary Liquid Glass surface. */
+.topbar{
+  background:linear-gradient(180deg,rgba(29,30,36,.78),rgba(10,11,15,.66))!important;
+  border-bottom:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:0 8px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.12)!important;
+  backdrop-filter:blur(22px) saturate(145%)!important;-webkit-backdrop-filter:blur(22px) saturate(145%)!important;
+}
+.brand img{filter:drop-shadow(0 3px 12px rgba(0,0,0,.4))}
+.nav{
+  background:linear-gradient(145deg,rgba(255,255,255,.17),rgba(95,99,110,.09) 45%,rgba(10,11,15,.78))!important;
+  border:1px solid rgba(255,255,255,.25)!important;border-radius:24px!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.26),inset 0 -1px 0 rgba(255,255,255,.05)!important;
+  backdrop-filter:blur(25px) saturate(160%)!important;-webkit-backdrop-filter:blur(25px) saturate(160%)!important;
+}
+.nav:after{content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.08),transparent 38%,rgba(237,28,36,.07));z-index:0}
+.nav button{position:relative;z-index:1;border-radius:16px!important;transition:background .22s ease,color .22s ease,transform .22s var(--ce-ease)!important}
+.nav button.active{background:linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.055))!important;color:#fff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 5px 16px rgba(0,0,0,.18)!important}
+.nav button.active:before{content:"";position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:14px;height:2px;border-radius:2px;background:var(--ce-red-soft);box-shadow:0 0 12px rgba(237,28,36,.7)}
+/* Content layer: dark, structured surfaces instead of glass-on-glass. */
+.hero{
+  background:linear-gradient(130deg,rgba(31,32,38,.94),rgba(15,16,21,.97) 65%,rgba(56,12,17,.76))!important;
+  border:1px solid rgba(255,255,255,.13)!important;border-radius:28px!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+.hero:before{opacity:.14!important;animation:none!important}
+.hero h1{letter-spacing:-1.2px!important}
+.hero-kicker,.creator-kicker{color:#ff737a!important;letter-spacing:2.2px!important}
+.hero-line{background:linear-gradient(90deg,var(--ce-red),rgba(237,28,36,0))!important}
+.composer,.post,.profile-card,.form-card,.ai-card,.search-panel,.creator-intro,.creator-admin-card,.visitor-inner{
+  background:linear-gradient(145deg,rgba(23,24,30,.97),rgba(13,14,18,.97))!important;
+  border:1px solid rgba(255,255,255,.12)!important;border-radius:22px!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.055)!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.post{border-radius:20px!important}
+.creator-intro{position:relative;overflow:hidden}
+.creator-intro:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 0 0,rgba(237,28,36,.12),transparent 48%);animation:none!important;transform:none!important}
+.creator-intro>*{position:relative;z-index:1}
+.profile-cover{background-color:#171014!important}
+.profile-cover:before{background:linear-gradient(120deg,rgba(237,28,36,.2),transparent 44%,rgba(255,255,255,.05))!important}
+.profile-content{background:linear-gradient(180deg,rgba(21,22,28,.98),rgba(12,13,17,.98))!important}
+.profile-avatar{border-color:rgba(255,255,255,.8)!important;box-shadow:0 10px 26px rgba(0,0,0,.38),0 0 0 5px rgba(237,28,36,.09)!important}
+.info{background:rgba(255,255,255,.035)!important;border:1px solid rgba(255,255,255,.09)!important;box-shadow:none!important;border-radius:14px!important}
+.info b{color:#b8bac3!important}
+.info span{color:#fff!important}
+.profile-role-admin,.profile-badge{border-color:rgba(237,28,36,.35)!important;background:rgba(237,28,36,.12)!important}
+.search-shell{background:transparent!important}
+.search-panel{border-radius:24px!important}
+.search-panel h1,.search-panel h2{letter-spacing:-.5px}
+input,textarea,select,.search-input,.composer-top textarea{
+  color:#fff!important;background:rgba(255,255,255,.045)!important;
+  border:1px solid rgba(255,255,255,.13)!important;border-radius:13px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+input:focus,textarea:focus,select:focus,.search-input:focus,.composer-top textarea:focus{
+  border-color:rgba(255,95,104,.7)!important;background:rgba(255,255,255,.065)!important;
+  box-shadow:0 0 0 3px rgba(237,28,36,.12)!important;outline:none!important;
+}
+button:not(.nav button){
+  transition:transform .18s var(--ce-ease),background .18s ease,border-color .18s ease,box-shadow .18s ease!important;
+}
+button:not(.nav button):hover{box-shadow:0 9px 24px rgba(237,28,36,.18)!important}
+button.alt,.tabs button:not(.active),.media-label,.social-btn{
+  background:rgba(255,255,255,.045)!important;border:1px solid rgba(255,255,255,.13)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055)!important;
+}
+.tabs .active{background:var(--ce-red)!important;border-color:var(--ce-red)!important}
+.msg{border-left-color:var(--ce-red)!important;background:rgba(237,28,36,.1)!important}
+.creator-admin-panel{backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+.ai-msg.assistant{background:rgba(255,255,255,.045)!important;border:1px solid rgba(255,255,255,.08)!important}
+a{color:#ff7b82}
+button:focus-visible,[role="button"]:focus-visible{outline:2px solid #ff737a!important;outline-offset:3px}
+@media(hover:hover) and (pointer:fine){
+ .nav button:hover{background:rgba(255,255,255,.09)!important}
+ .info:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.18)!important}
+ .post:hover,.composer:hover,.profile-card:hover,.search-panel:hover,.creator-intro:hover{border-color:rgba(255,255,255,.17)!important}
+}
+@media(max-width:700px){
+ .topbar{height:64px;padding-left:14px;padding-right:14px}
+ .nav{border-radius:22px!important;padding:6px!important}
+ .nav button{border-radius:15px!important}
+ .hero{border-radius:24px!important}
+ .composer,.post,.profile-card,.form-card,.ai-card,.search-panel,.creator-intro{border-radius:19px!important}
+}
+@media(prefers-reduced-transparency:reduce){
+ .topbar,.nav,.auth-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(15,16,20,.97)!important}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
