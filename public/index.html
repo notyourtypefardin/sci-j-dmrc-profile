@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="ui-version" content="2026.10.16-liquid-glass-02"><link rel="preload" as="image" href="/file_000000004ea4820883ccbb5d217d3d92.png" fetchpriority="high"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>DMRC • SCI J</title>
+<meta name="ui-version" content="2026.10.16-liquid-glass-03"><link rel="preload" as="image" href="/file_000000004ea4820883ccbb5d217d3d92.png" fetchpriority="high"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>DMRC • SCI J</title>
 <style>
 *{box-sizing:border-box} :root{--red:#ed1c24;--red2:#ff3640;--ink:#090a0d;--panel:#101216e8;--line:#ffffff16;--muted:#a9adb7;--ease:cubic-bezier(.22,.8,.2,1);--campus-bg:url('/file_000000004ea4820883ccbb5d217d3d92.png')}
 html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:#07080a;color:#fff;min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body::selection{background:#ed1c2455;color:#fff}
@@ -338,5 +338,44 @@ input:focus,textarea:focus,select:focus,.composer-top textarea:focus,.search-inp
   },{passive:true});
 })();
 </script>
+
+
+<style id="dmrc-liquid-glass-performance-03">
+/* Keep the Liquid Glass look while reducing mobile GPU cost. */
+@media (max-width:700px) {
+  .glass,.topbar,.nav,.hero,.composer,.post,.profile-card,.creator-intro,
+  .ai-card,.search-panel,.visitor-inner,.creator-admin-card,.info {
+    -webkit-backdrop-filter:blur(10px) saturate(125%);
+    backdrop-filter:blur(10px) saturate(125%);
+  }
+  .auth-card {
+    -webkit-backdrop-filter:blur(9px) saturate(125%);
+    backdrop-filter:blur(9px) saturate(125%);
+  }
+  .home-bg,.profile-wrap:before { animation:none!important; }
+  .hero-orbit.orbit-one { animation-duration:32s; }
+  .hero-orbit.orbit-two { animation-duration:26s; }
+}
+/* Motion stays on opacity/transform instead of repeatedly animating blur filters. */
+@keyframes lgPageEnter {
+  from { opacity:0; transform:translate3d(0,8px,0); }
+  to { opacity:1; transform:translate3d(0,0,0); }
+}
+@keyframes lgSlideInLeft {
+  from { opacity:0; transform:translate3d(14px,0,0); }
+  to { opacity:1; transform:translate3d(0,0,0); }
+}
+@keyframes lgSlideInRight {
+  from { opacity:0; transform:translate3d(-14px,0,0); }
+  to { opacity:1; transform:translate3d(0,0,0); }
+}
+@media (max-width:380px) {
+  .glass,.topbar,.nav,.hero,.composer,.post,.profile-card,.creator-intro,
+  .ai-card,.search-panel,.visitor-inner,.creator-admin-card,.info {
+    -webkit-backdrop-filter:blur(8px) saturate(120%);
+    backdrop-filter:blur(8px) saturate(120%);
+  }
+}
+</style>
 
 </body></html>
